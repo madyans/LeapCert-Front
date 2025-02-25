@@ -22,5 +22,4 @@ export default function Page() {
             </ScrollArea>
         </div>
     );
-
 }
