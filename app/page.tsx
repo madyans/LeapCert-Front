@@ -1,7 +1,7 @@
 import CardLogin from "@/components/createdComponents/cardLogin";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
-import teste from "../public/bgLeony.jpg";
+import teste from "../public/background.svg";
 
 export default function Page() {
     return (
