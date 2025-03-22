@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LeapCert",
-  description: "LaepCert Sapos Poggers",
+  title: "LeapCert - Plataforma de Ensino",
+  description: "O proximo nivel do seu conhecimento",
 };
 
 export default function RootLayout({
