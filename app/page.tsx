@@ -1,28 +1,17 @@
 import CardHome from "@/components/createdComponents/cardHome";
-import Image from "next/image";
-import sapo from "../public/sapoHi.png";
+import sapoFlor from "../public/sapo flor.png";
+import sapo1 from "../public/sapo1.png";
 import teste from "../public/TESTE.png";
 
 export default function Page() {
     return (
-        <div className="w-full min-h-screen flex flex-col bg-emerald-100">
+        <div className="w-full min-h-screen flex flex-col bg-green-50">
             <header className="bg-emerald-900 text-white w-full py-6 px-4 flex flex-col items-center shadow-md gap-1">
-                <div className="relative w-32 h-32 mb-16">
-                    <Image
-                        src={sapo}
-                        alt="Mascote Sapo"
-                        layout="responsive"
-                        width={128}
-                        height={128}
-                        quality={100}
-                        className="rounded-xl border-4 border-white shadow-lg"
-                    />
-                </div>
                 <h1 className="text-5xl font-extrabold tracking-wide drop-shadow-xl">
-                    Leap<span className="text-emerald-200">Cert</span>
+                    Leap<span className="text-green-300">Cert</span>
                 </h1>
                 <h3 className="text-lg font-medium opacity-90 italic tracking-wide">
-                    O próximo nível do seu <span className="text-emerald-100">conhecimento</span>
+                    Um <span className="text-green-300">salto</span> para o próximo nível do seu aprendizado
                 </h3>
             </header>
 
@@ -32,9 +21,9 @@ export default function Page() {
                 </h2>
 
                 <div className="flex flex-wrap justify-center gap-6 w-full">
-                    <CardHome imgRoute={teste} description="Teste" routeButton="/" />
-                    <CardHome imgRoute={teste} description="Teste" routeButton="/" />
-                    <CardHome imgRoute={teste} description="Teste" routeButton="/" />
+                    <CardHome imgRoute={sapoFlor} description="Conheça mais sobre o LeapCert" routeButton="/leapcert" buttonDescription="Salto de conhecimento" />
+                    <CardHome imgRoute={teste} description="Fazer cadastro no sistema" routeButton="/cadastro" buttonDescription="Cadastre-se" />
+                    <CardHome imgRoute={sapo1} description="Faça login no sistema e entre" routeButton="/login" buttonDescription="Entrar" />
                 </div>
             </main>
 
@@ -66,7 +55,9 @@ export default function Page() {
                 </div>
 
                 <div className="mt-6 text-center text-sm opacity-75">
-                    © 2025 LeapCert. Todos os direitos reservados.
+                    <p>
+                        {`© 2025 LeapCert ${process.env.version}. Todos os direitos reservados.`}
+                    </p>
                 </div>
             </footer>
         </div>

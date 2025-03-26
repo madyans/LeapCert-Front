@@ -8,10 +8,11 @@ import { Button } from "../ui/button";
 interface iProps {
     imgRoute: StaticImageData;
     description: string;
-    routeButton: string
+    routeButton: string;
+    buttonDescription: string;
 }
 
-export default function CardHome({ imgRoute, description, routeButton }: iProps) {
+export default function CardHome({ imgRoute, description, routeButton, buttonDescription }: iProps) {
     const router = useRouter()
 
     return (
@@ -24,14 +25,21 @@ export default function CardHome({ imgRoute, description, routeButton }: iProps)
                         width={325}
                         height={200}
                         quality={100}
-                        className="rounded"
+                        className="rounded-lg"
                     />
                 </CardHeader>
-                <CardContent>
-                    <p>{description}</p>
+                <CardContent className="">
+                    <p className="text-lg font-medium text-gray-800 text-center">
+                        {description}
+                    </p>
                 </CardContent>
                 <CardFooter className="w-full">
-                    <Button className="w-full" onClick={() => router.push(routeButton)}>Clique aqui</Button>
+                    <Button
+                        className="w-full font-bold text-white bg-green-600 hover:bg-green-700 transition-transform duration-300 transform hover:scale-105 px-6 py-3 rounded-lg shadow-md hover:shadow-lg"
+                        onClick={() => router.push(routeButton)}
+                    >
+                        {buttonDescription}
+                    </Button>
                 </CardFooter>
             </Card>
         </>
