@@ -1,3 +1,5 @@
+'use client';
+
 import CardHome from "@/components/createdComponents/cardHome";
 import sapoFlor from "../public/sapo flor.png";
 import sapo1 from "../public/sapo1.png";
@@ -13,6 +15,7 @@ export default function Page() {
                 <h3 className="text-lg font-medium opacity-90 italic tracking-wide">
                     Um <span className="text-green-300">salto</span> para o próximo nível do seu aprendizado
                 </h3>
+
             </header>
 
             <main className="flex-1 flex flex-col items-center justify-center text-center px-2 py-16">

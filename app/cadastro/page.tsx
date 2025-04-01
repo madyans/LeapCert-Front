@@ -5,23 +5,29 @@ import { Card } from "@/components/ui/card";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import Fundo from "../../public/fundoMassaMasTaClaro.png";
 import sapoOi from "../../public/sapo.png";
+import useMutateAddUser from "./hooks/mutations/useMutateAddUser";
 import { formSchema } from "./interface/cadastroType";
 
 export default function Cadastro() {
     const router = useRouter();
     const styledLabel = 'text-gray-900 font-bold'
 
+    const { mutateAsync, isPending } = useMutateAddUser();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            nome: "",
             email: "",
-            nome_usuario: "",
+            usuario: "",
             senha: "",
             confirmar_senha: "",
         },
@@ -29,6 +35,24 @@ export default function Cadastro() {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
+        if (values.senha == values.confirmar_senha) {
+            const userToSend = {
+                nome: values.nome,
+                email: values.email,
+                senha: values.senha,
+                usuario: values.usuario,
+                perfil: 3
+            }
+            mutateAsync(userToSend);
+            form.reset();
+        } else {
+            toast.error("Ação não autorizada", {
+                description: "Senha e confirmar senha precisam ser as mesmas",
+                duration: 5000,
+                closeButton: true
+            })
+            return;
+        }
     }
 
     return (
@@ -59,6 +83,21 @@ export default function Cadastro() {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                             <FormField
                                 control={form.control}
+                                name="nome"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className={styledLabel} >Nome completo</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Seu nome" {...field} />
+                                        </FormControl>
+                                        <FormDescription>Informe um nome válido</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
@@ -74,7 +113,7 @@ export default function Cadastro() {
 
                             <FormField
                                 control={form.control}
-                                name="nome_usuario"
+                                name="usuario"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className={styledLabel} >Nome de Usuário</FormLabel>
@@ -121,13 +160,16 @@ export default function Cadastro() {
                                     type="button"
                                     onClick={() => router.back()}
                                     className="bg-gray-600 w-1/2 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-all shadow-md"
+                                    disabled={isPending}
                                 >
                                     Voltar
                                 </Button>
                                 <Button
                                     type="submit"
                                     className="bg-green-600 w-1/2 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all shadow-md"
+                                    disabled={isPending}
                                 >
+                                    {isPending && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
                                     Criar Conta
                                 </Button>
                             </div>
