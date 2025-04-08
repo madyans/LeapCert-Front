@@ -1,4 +1,4 @@
-import { ContextWrapper } from "@/context/ContextWrapper";
+import { ContextWrapper } from "@/src/context/ContextWrapper";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";

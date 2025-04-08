@@ -1,9 +1,9 @@
 'use client';
 
-import CardHome from "@/components/createdComponents/cardHome";
-import sapoFlor from "../public/sapo flor.png";
-import sapo1 from "../public/sapo1.png";
-import teste from "../public/TESTE.png";
+import sapoFlor from "../../public/sapo flor.png";
+import sapo1 from "../../public/sapo1.png";
+import teste from "../../public/TESTE.png";
+import CardHome from "../components/createdComponents/cardHome";
 
 export default function Page() {
     return (

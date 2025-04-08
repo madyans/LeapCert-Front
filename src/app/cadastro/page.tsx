@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/src/components/ui/button";
+import { Card } from "@/src/components/ui/card";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form";
+import { Input } from "@/src/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
@@ -11,8 +11,8 @@ import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import Fundo from "../../public/fundoMassaMasTaClaro.png";
-import sapoOi from "../../public/sapo.png";
+import Fundo from "../../../public/fundoMassaMasTaClaro.png";
+import sapoOi from "../../../public/sapo.png";
 import useMutateAddUser from "./hooks/mutations/useMutateAddUser";
 import { formSchema } from "./interface/cadastroType";
 
@@ -34,7 +34,7 @@ export default function Cadastro() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-   
+
         const nomeValido = /^[A-Za-zÀ-ÿ\s]+$/.test(values.nome);
         if (!nomeValido) {
             toast.error("Nome inválido", {
@@ -44,8 +44,8 @@ export default function Cadastro() {
             });
             return;
         }
-    
-       
+
+
         const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email);
         if (!emailValido) {
             toast.error("E-mail inválido", {
@@ -55,8 +55,8 @@ export default function Cadastro() {
             });
             return;
         }
-    
-       
+
+
         if (values.senha !== values.confirmar_senha) {
             toast.error("Ação não autorizada", {
                 description: "Senha e confirmar senha precisam ser as mesmas",
@@ -65,8 +65,8 @@ export default function Cadastro() {
             });
             return;
         }
-    
-        
+
+
         const userToSend = {
             nome: values.nome,
             email: values.email,
@@ -74,11 +74,11 @@ export default function Cadastro() {
             usuario: values.usuario,
             perfil: 3
         };
-    
+
         mutateAsync(userToSend);
         form.reset();
     }
-    
+
 
     return (
         <div className="relative w-full bg-background min-h-screen flex items-center justify-center">

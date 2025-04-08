@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image, { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
 interface iProps {
     imgRoute: StaticImageData;

@@ -3,13 +3,13 @@
 import { MoveLeft } from 'lucide-react';
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import caio from "../../public/CaioBoudens.jpeg";
-import fefo from "../../public/Fefo.png";
-import frois from "../../public/Frois.jpeg";
-import guto from "../../public/Guto.jpeg";
-import Fundo from "../../public/leapcertbg.png";
-import img1 from "../../public/sobrenos1.png";
-import img2 from "../../public/sobrenos2.png";
+import caio from "../../../public/CaioBoudens.jpeg";
+import fefo from "../../../public/Fefo.png";
+import frois from "../../../public/Frois.jpeg";
+import guto from "../../../public/Guto.jpeg";
+import Fundo from "../../../public/leapcertbg.png";
+import img1 from "../../../public/sobrenos1.png";
+import img2 from "../../../public/sobrenos2.png";
 
 export default function Page() {
     const router = useRouter();

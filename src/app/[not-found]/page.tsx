@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Background from "../../public/notFoundBg.png";
+import Background from "../../../public/notFoundBg.png";
 
 export default function notFound() {
     return (
