@@ -181,4 +181,3 @@ export default function Cadastro() {
         </div>
     );
 }
-//teste
