@@ -34,25 +34,49 @@ export default function Cadastro() {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-        if (values.senha == values.confirmar_senha) {
-            const userToSend = {
-                nome: values.nome,
-                email: values.email,
-                senha: values.senha,
-                usuario: values.usuario,
-                perfil: 3
-            }
-            mutateAsync(userToSend);
-            form.reset();
-        } else {
+   
+        const nomeValido = /^[A-Za-zÀ-ÿ\s]+$/.test(values.nome);
+        if (!nomeValido) {
+            toast.error("Nome inválido", {
+                description: "O nome não pode conter números ou pontuação.",
+                duration: 5000,
+                closeButton: true
+            });
+            return;
+        }
+    
+       
+        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email);
+        if (!emailValido) {
+            toast.error("E-mail inválido", {
+                description: "Informe um e-mail com formato válido.",
+                duration: 5000,
+                closeButton: true
+            });
+            return;
+        }
+    
+       
+        if (values.senha !== values.confirmar_senha) {
             toast.error("Ação não autorizada", {
                 description: "Senha e confirmar senha precisam ser as mesmas",
                 duration: 5000,
                 closeButton: true
-            })
+            });
             return;
         }
+    
+        
+        const userToSend = {
+            nome: values.nome,
+            email: values.email,
+            senha: values.senha,
+            usuario: values.usuario,
+            perfil: 3
+        };
+    
+        mutateAsync(userToSend);
+        form.reset();
     }
     
 
