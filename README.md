@@ -90,8 +90,6 @@ Este projeto utiliza ESLint com a configuração padrão recomendada pelo Next.j
   ```
 ---
 
----
-
 ## 📝 Licença
 
 Este projeto é privado e de uso interno. Todos os direitos reservados.
