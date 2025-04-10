@@ -10,9 +10,33 @@ jobs:
     steps:
       - name: Enviar notificação para o Discord
         run: |
+          COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{
-            "content": "🚀 Novo push no repositório por **${{ github.actor }}** no projeto **${{ github.repository }}**!"
-          }' \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"🚀 Novo Push Realizado!\",
+              \"description\": \"Um novo commit foi enviado por **${{ github.actor }}** no repositório **${{ github.repository }}**.\",
+              \"color\": 5814783,
+              \"fields\": [
+                {
+                  \"name\": \"🔗 Commit\",
+                  \"value\": \"[Ver commit](${COMMIT_URL})\"
+                },
+                {
+                  \"name\": \"📦 Branch\",
+                  \"value\": \"${{ github.ref_name }}\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"🕒 Hora\",
+                  \"value\": \"$(date -u)\",
+                  \"inline\": true
+                }
+              ],
+              \"footer\": {
+                \"text\": \"GitHub Actions • Discord Webhook\"
+              }
+            }]
+          }" \
           ${{ secrets.DISCORD_WEBHOOK }}
