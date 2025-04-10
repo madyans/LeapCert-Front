@@ -8,9 +8,11 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      
-name: Notificar via Webhook
-      uses: Ilshidur/action-discord@master
-      with:
-        webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-        message: "🚀 Novo push feito no repositório por ${{ github.actor }}!"
+      - name: Enviar notificação para o Discord
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          SLACK_USERNAME: "GitHub Bot"
+          SLACK_ICON_EMOJI: ":rocket:"
+          SLACK_TITLE: "🚀 Novo push no repositório!"
+          SLACK_MESSAGE: "Usuário: ${{ github.actor }} fez um push em `${{ github.repository }}`"
