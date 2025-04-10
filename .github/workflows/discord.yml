@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Enviar notificação para o Discord
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          SLACK_USERNAME: "GitHub Bot"
-          SLACK_ICON_EMOJI: ":rocket:"
-          SLACK_TITLE: "🚀 Novo push no repositório!"
-          SLACK_MESSAGE: "Usuário: ${{ github.actor }} fez um push em `${{ github.repository }}`"
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "🚀 Novo push no repositório por **${{ github.actor }}** no projeto **${{ github.repository }}**!"
+          }' \
+          ${{ secrets.DISCORD_WEBHOOK }}
