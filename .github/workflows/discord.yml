@@ -1,4 +1,4 @@
-name: Notificar no Discord
+name: Notificar no Discord - Front-End
 
 on:
   push:
@@ -8,18 +8,19 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Enviar notificação para o Discord
+      - name: Enviar notificação para o Discord (Front-End)
         run: |
           COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
           DATA_HORA=$(TZ=America/Sao_Paulo date "+%a %d %b %Y %T %Z")
 
           curl -H "Content-Type: application/json" \
           -X POST \
           -d "{
             \"embeds\": [{
-              \"title\": \"🚀 Novo Push Realizado!\",
-              \"description\": \"Um novo commit foi enviado por **${{ github.actor }}** no repositório **${{ github.repository }}**.\",
-              \"color\": 5814783,
+              \"title\": \"🎨 Atualização no Front-End\",
+              \"description\": \"**${{ github.actor }}** enviou um novo commit para o repositório **${{ github.repository }}**.\n\n💬 **Mensagem do commit:**\n\`\`\`${COMMIT_MSG}\`\`\`\",
+              \"color\": 3447003,
               \"fields\": [
                 {
                   \"name\": \"🔗 Commit\",
@@ -37,7 +38,7 @@ jobs:
                 }
               ],
               \"footer\": {
-                \"text\": \"Um salto no seu conhecimento!\"
+                \"text\": \"Front-end com novidades fresquinhas 💅✨\"
               }
             }]
           }" \
