@@ -16,6 +16,8 @@ jobs:
           sudo locale-gen pt_BR.UTF-8
 
       - name: Enviar notificação para o Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           COMMIT_MSG="${{ github.event.head_commit.message }}"
@@ -23,53 +25,56 @@ jobs:
           AUTOR="${{ github.actor }}"
           BRANCH="${{ github.ref_name }}"
           REPO="${{ github.repository }}"
-
-          # Data em PT-BR, horário de Brasília
           DATA_HORA=$(LC_TIME=pt_BR.UTF-8 TZ=America/Sao_Paulo date "+%A, %d de %B de %Y às %H:%M:%S (%Z)")
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          PAYLOAD=$(cat <<EOF
+{
+  "username": "GitHub Actions | Front-End",
+  "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+  "embeds": [
+    {
+      "title": "🚀 Novo commit no Front-End",
+      "description": "**${AUTOR}** realizou um push no repositório **${REPO}**.",
+      "color": 3066993,
+      "fields": [
+        {
+          "name": "📝 Mensagem do Commit",
+          "value": "\`\`\`${COMMIT_MSG}\`\`\`"
+        },
+        {
+          "name": "🔗 Commit",
+          "value": "[Ver commit](${COMMIT_URL})",
+          "inline": true
+        },
+        {
+          "name": "📦 Branch",
+          "value": "${BRANCH}",
+          "inline": true
+        },
+        {
+          "name": "🕒 Data",
+          "value": "${DATA_HORA}",
+          "inline": true
+        },
+        {
+          "name": "🔐 SHA",
+          "value": "\`${COMMIT_SHA:0:7}\`",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Monitoramento automático via GitHub Actions",
+        "icon_url": "https://cdn-icons-png.flaticon.com/512/25/25231.png"
+      },
+      "timestamp": "${TIMESTAMP}"
+    }
+  ]
+}
+EOF
+)
 
           curl -H "Content-Type: application/json" \
-            -X POST \
-            -d @- ${{ secrets.DISCORD_WEBHOOK }} <<EOF
-          {
-            "username": "GitHub Actions | Front-End",
-            "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-            "embeds": [
-              {
-                "title": "🚀 Novo commit no Front-End",
-                "description": "**${AUTOR}** realizou um push no repositório **${REPO}**.",
-                "color": 3066993,
-                "fields": [
-                  {
-                    "name": "📝 Mensagem do Commit",
-                    "value": "\`\`\`${COMMIT_MSG}\`\`\`"
-                  },
-                  {
-                    "name": "🔗 Commit",
-                    "value": "[Ver commit](${COMMIT_URL})",
-                    "inline": true
-                  },
-                  {
-                    "name": "📦 Branch",
-                    "value": "${BRANCH}",
-                    "inline": true
-                  },
-                  {
-                    "name": "🕒 Data",
-                    "value": "${DATA_HORA}",
-                    "inline": true
-                  },
-                  {
-                    "name": "🔐 SHA",
-                    "value": "\`${COMMIT_SHA:0:7}\`",
-                    "inline": true
-                  }
-                ],
-                "footer": {
-                  "text": "Monitoramento automático via GitHub Actions",
-                  "icon_url": "https://cdn-icons-png.flaticon.com/512/25/25231.png"
-                },
-                "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-              }
-            ]
-          }
-EOF
+               -X POST \
+               -d "${PAYLOAD}" \
+               "$DISCORD_WEBHOOK"
