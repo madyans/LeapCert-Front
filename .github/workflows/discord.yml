@@ -7,39 +7,69 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Enviar notificação para o Discord (Front-End)
+      - name: Configurar locale pt_BR.UTF-8
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y locales
+          sudo locale-gen pt_BR.UTF-8
+
+      - name: Enviar notificação para o Discord
         run: |
           COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           COMMIT_MSG="${{ github.event.head_commit.message }}"
-          DATA_HORA=$(TZ=America/Sao_Paulo date "+%a %d %b %Y %T %Z")
+          COMMIT_SHA="${{ github.sha }}"
+          AUTOR="${{ github.actor }}"
+          BRANCH="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+
+          # Data em PT-BR, horário de Brasília
+          DATA_HORA=$(LC_TIME=pt_BR.UTF-8 TZ=America/Sao_Paulo date "+%A, %d de %B de %Y às %H:%M:%S (%Z)")
 
           curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{
-            \"embeds\": [{
-              \"title\": \"🎨 Atualização no Front-End\",
-              \"description\": \"**${{ github.actor }}** enviou um novo commit para o repositório **${{ github.repository }}**.\n\n💬 **Mensagem do commit:**\n\`\`\`${COMMIT_MSG}\`\`\`\",
-              \"color\": 3447003,
-              \"fields\": [
-                {
-                  \"name\": \"🔗 Commit\",
-                  \"value\": \"[Ver commit](${COMMIT_URL})\"
+            -X POST \
+            -d @- ${{ secrets.DISCORD_WEBHOOK }} <<EOF
+          {
+            "username": "GitHub Actions | Front-End",
+            "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+            "embeds": [
+              {
+                "title": "🚀 Novo commit no Front-End",
+                "description": "**${AUTOR}** realizou um push no repositório **${REPO}**.",
+                "color": 3066993,
+                "fields": [
+                  {
+                    "name": "📝 Mensagem do Commit",
+                    "value": "\`\`\`${COMMIT_MSG}\`\`\`"
+                  },
+                  {
+                    "name": "🔗 Commit",
+                    "value": "[Ver commit](${COMMIT_URL})",
+                    "inline": true
+                  },
+                  {
+                    "name": "📦 Branch",
+                    "value": "${BRANCH}",
+                    "inline": true
+                  },
+                  {
+                    "name": "🕒 Data",
+                    "value": "${DATA_HORA}",
+                    "inline": true
+                  },
+                  {
+                    "name": "🔐 SHA",
+                    "value": "\`${COMMIT_SHA:0:7}\`",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "Monitoramento automático via GitHub Actions",
+                  "icon_url": "https://cdn-icons-png.flaticon.com/512/25/25231.png"
                 },
-                {
-                  \"name\": \"📦 Branch\",
-                  \"value\": \"${{ github.ref_name }}\",
-                  \"inline\": true
-                },
-                {
-                  \"name\": \"🕒 Hora\",
-                  \"value\": \"${DATA_HORA}\",
-                  \"inline\": true
-                }
-              ],
-              \"footer\": {
-                \"text\": \"Front-end com novidades fresquinhas 💅✨\"
+                "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
               }
-            }]
-          }" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+            ]
+          }
+EOF
