@@ -1,3 +1,5 @@
+name: Notificar no Discord - Front-End
+
 on:
   push:
     branches: [ main ]
@@ -36,7 +38,7 @@ jobs:
                 }
               ],
               \"footer\": {
-                \"text\": \"Front-end com novidades sobre sapo froggerskk\"
+                \"text\": \"Front-end com novidades fresquinhas 💅✨\"
               }
             }]
           }" \
