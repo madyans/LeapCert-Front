@@ -2,17 +2,11 @@ version: "3"
 # testing pipeline
 services:
   leapcert-front:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: leapcert-front:${IMAGE_TAG:-latest}
-    deploy:
-      restart_policy:
-        condition: "any"
-        delay: "0"
-        max_attempts: 3
-        window: "30s"
-      resources:
-        limits:
-          cpus: "2.00"
-          memory: "2G"
+    container_name: leapcert-front
     ports:
       - "3030:3000"
     networks:
