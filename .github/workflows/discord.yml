@@ -1,54 +1,37 @@
-name: Notificar no Discord - Front-End
+- name: Enviar notificação para o Discord (Front-End)
+  env:
+    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  run: |
+    COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+    COMMIT_MSG="${{ github.event.head_commit.message }}"
+    DATA_HORA=$(TZ=America/Sao_Paulo date "+%a %d %b %Y %T %Z")
 
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verificar se o webhook está setado
-        run: |
-          if [ -z "${{ secrets.DISCORD_WEBHOOK }}" ]; then
-            echo "⚠️ DISCORD_WEBHOOK está vazio"
-            exit 1
-          else
-            echo "✅ DISCORD_WEBHOOK está configurado"
-          fi
-
-      - name: Enviar notificação para o Discord (Front-End)
-        run: |
-          COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
-          COMMIT_MSG="${{ github.event.head_commit.message }}"
-          DATA_HORA=$(TZ=America/Sao_Paulo date "+%a %d %b %Y %T %Z")
-
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{
-            \"embeds\": [{
-              \"title\": \"🎨 Atualização no Front-End\",
-              \"description\": \"**${{ github.actor }}** enviou um novo commit para o repositório **${{ github.repository }}**.\n\n💬 **Mensagem do commit:**\n\\\${COMMIT_MSG}\\\\",
-              \"color\": 3447003,
-              \"fields\": [
-                {
-                  \"name\": \"🔗 Commit\",
-                  \"value\": \"[Ver commit](${COMMIT_URL})\"
-                },
-                {
-                  \"name\": \"📦 Branch\",
-                  \"value\": \"${{ github.ref_name }}\",
-                  \"inline\": true
-                },
-                {
-                  \"name\": \"🕒 Hora\",
-                  \"value\": \"${DATA_HORA}\",
-                  \"inline\": true
-                }
-              ],
-              \"footer\": {
-                \"text\": \"Front-end com novidades fresquinhas 💅✨\"
-              }
-            }]
-          }" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+    curl -H "Content-Type: application/json" \
+    -X POST \
+    -d "{
+      \"embeds\": [{
+        \"title\": \"🎨 Atualização no Front-End\",
+        \"description\": \"**${{ github.actor }}** enviou um novo commit para o repositório **${{ github.repository }}**.\n\n💬 **Mensagem do commit:**\n\\\${COMMIT_MSG}\\\\",
+        \"color\": 3447003,
+        \"fields\": [
+          {
+            \"name\": \"🔗 Commit\",
+            \"value\": \"[Ver commit](${COMMIT_URL})\"
+          },
+          {
+            \"name\": \"📦 Branch\",
+            \"value\": \"${{ github.ref_name }}\",
+            \"inline\": true
+          },
+          {
+            \"name\": \"🕒 Hora\",
+            \"value\": \"${DATA_HORA}\",
+            \"inline\": true
+          }
+        ],
+        \"footer\": {
+          \"text\": \"Front-end com novidades fresquinhas 💅✨\"
+        }
+      }]
+    }" \
+    "$DISCORD_WEBHOOK"
