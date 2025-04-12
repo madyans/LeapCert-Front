@@ -1,4 +1,4 @@
-# 🚀 LeapCert Front
+# 🚀 LeapCert Front 
 
 Interface web do projeto **LeapCert**, construída com **Next.js 15**, **React 19**, **TailwindCSS** e diversas ferramentas modernas do ecossistema frontend. Este projeto proporciona uma experiência de usuário fluida, acessível e responsiva para interações com a plataforma LeapCert.  
 
