@@ -8,14 +8,14 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-    - name: Verificar se o webhook está setado
-      run: |
-        if [ -z "${{ secrets.DISCORD_WEBHOOK }}" ]; then
-          echo "⚠️ DISCORD_WEBHOOK está vazio"
-          exit 1
-        else
-          echo "✅ DISCORD_WEBHOOK está configurado"
-        fi
+      - name: Verificar se o webhook está setado
+        run: |
+          if [ -z "${{ secrets.DISCORD_WEBHOOK }}" ]; then
+            echo "⚠️ DISCORD_WEBHOOK está vazio"
+            exit 1
+          else
+            echo "✅ DISCORD_WEBHOOK está configurado"
+          fi
 
       - name: Enviar notificação para o Discord (Front-End)
         run: |
