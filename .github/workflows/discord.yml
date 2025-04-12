@@ -49,10 +49,7 @@ jobs:
                     \"value\": \"${DATA_HORA}\",
                     \"inline\": true
                   }
-                ],
-                \"footer\": {
-                  \"text\": \"Front-end com novidades fresquinhas 💅✨\"
-                }
+                ]
               }]
             }" \
             "$DISCORD_WEBHOOK"
