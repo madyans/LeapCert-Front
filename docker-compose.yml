@@ -1,5 +1,4 @@
 version: "3"
-# testing pipeline
 services:
   leapcert-front:
     build:
@@ -10,8 +9,7 @@ services:
     ports:
       - "3030:3000"
     networks:
-      - nginx_public
+      - leapcert-network
 
 networks:
-  nginx_public:
-    external: true
+  leapcert-network:
