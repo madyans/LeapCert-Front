@@ -67,4 +67,4 @@ USER nextjs
 
 # Expor porta e definir comando
 EXPOSE 3000
-CMD ["pnpm", "start:next"]
+CMD ["pnpm", "start"]
