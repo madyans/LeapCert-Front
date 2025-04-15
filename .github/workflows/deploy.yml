@@ -54,3 +54,10 @@ jobs:
             cd ~/leapcert/LeapCert-Front
             docker-compose down
             docker-compose up -d --build
+      
+    - name: Enviar notificação Discord
+      run: |
+        curl -H "Content-Type: application/json" \
+        -X POST \
+        -d '{"content":"🚀 Nova versão do *LeapCert-Front* foi publicada em produção com sucesso!"}' \
+        ${{ secrets.DISCORD_WEBHOOK }}
