@@ -24,17 +24,16 @@ import { useRouter } from "next/navigation";
 import teste from "../../../../public/TESTE.png";
 import CardNavBar from "./card-navbar";
 
-// Menu items.
-const items = [
-    { title: "Home", url: "#", icon: Home },
-    { title: "Inbox", url: "#", icon: Inbox },
-    { title: "Calendar", url: "#", icon: Calendar },
-    { title: "Search", url: "#", icon: Search },
-    { title: "Settings", url: "#", icon: Settings },
-];
-
 export function AppSidebar() {
     const router = useRouter();
+
+    const items = [
+        { title: "Home", url: "/home", icon: Home },
+        { title: "Área do aluno", url: "/home/aluno", icon: Calendar },
+        { title: "Área do professor", url: "/home/professor", icon: Search },
+        { title: "Cursos", url: "/home/cursos", icon: Settings },
+        { title: "Configuração", url: "/home/configuracao", icon: Inbox },
+    ];
 
     return (
         <Sidebar>
@@ -54,10 +53,16 @@ export function AppSidebar() {
                                 {items.map((item) => (
                                     <SidebarMenuItem key={item.title} className="border rounded">
                                         <SidebarMenuButton asChild>
-                                            <a href={item.url}>
-                                                <item.icon />
-                                                <span>{item.title}</span>
-                                            </a>
+                                            <Button
+                                                onClick={() => router.push(item.url)}
+                                                variant="outline"
+                                                className="flex flex-row justify-start gap-3 transition-colors duration-300 border-gray-300 hover:bg-gray-100 hover:border-gray-500 focus:ring-2 focus:ring-gray-400"
+                                            >
+                                                <item.icon className="text-gray-700 transition-colors duration-300 group-hover:text-black" />
+                                                <p className="font-semibold text-gray-800 transition-colors duration-300 group-hover:text-black">
+                                                    {item.title}
+                                                </p>
+                                            </Button>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 ))}
@@ -70,7 +75,7 @@ export function AppSidebar() {
                         <Button
                             onClick={() => router.push("/")}
                             variant={"outline"}
-                            className="text-black hover:bg-red-100"
+                            className="text-black hover:bg-zinc-100 transition-colors"
                         >
                             Desconectar
                         </Button>

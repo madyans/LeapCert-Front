@@ -1,0 +1,1 @@
+export const dsp = "p-2 text-black";

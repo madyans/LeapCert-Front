@@ -27,12 +27,11 @@ export default function RootLayout({
   return (
     <ContextWrapper>
       <html lang="pt_BR">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen w-screen`}
-        >
-          <Toaster richColors theme="light" />
-
-          {children}
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen w-screen text-black`}>
+          <ContextWrapper>
+            <Toaster richColors theme="light" />
+            {children}
+          </ContextWrapper>
         </body>
       </html>
     </ContextWrapper>

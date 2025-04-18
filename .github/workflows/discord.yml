@@ -37,7 +37,7 @@ jobs:
             -d "{
               \"embeds\": [{
                 \"author\": {
-                  \"name\": \"${COMMIT_AUTHOR}\"
+                  \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
                 },
                 \"description\": \"${COMMIT_AUTHOR} pushed to branch **${COMMIT_BRANCH}** of **${REPO_NAME}** ([Compare changes](${COMPARE_URL}))\\n[${SHORT_SHA}](${COMMIT_URL}): ${COMMIT_MSG}\",
                 \"color\": 3447003,
