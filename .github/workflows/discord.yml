@@ -29,6 +29,7 @@ jobs:
           COMMIT_BRANCH: "${{ github.ref_name }}"
           REPO_NAME: "${{ github.repository }}"
           COMMIT_SHA: "${{ github.sha }}"
+          ACTOR: "${{ github.actor }}"
         run: |
           SHORT_SHA=${COMMIT_SHA:0:7}
           DATA_HORA=$(TZ=America/Sao_Paulo date "+%d/%m/%Y, %H:%M")
@@ -37,7 +38,8 @@ jobs:
             -d "{
               \"embeds\": [{
                 \"author\": {
-                  \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
+                  \"name\": \"${COMMIT_AUTHOR}\",
+                  \"icon_url\": \"https://github.com/${ACTOR}.png\"
                 },
                 \"description\": \"${COMMIT_AUTHOR} pushed to branch **${COMMIT_BRANCH}** of **${REPO_NAME}** ([Compare changes](${COMPARE_URL}))\\n[${SHORT_SHA}](${COMMIT_URL}): ${COMMIT_MSG}\",
                 \"color\": 3447003,
