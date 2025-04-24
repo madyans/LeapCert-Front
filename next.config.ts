@@ -10,7 +10,7 @@ const development = {
 
 const production = {
   env: {
-    API_URL: "http://147.79.110.137:6030/api/",
+    API_URL: "https://api.leapcert.com.br/api/",
     version: version
   }
 }
