@@ -10,7 +10,7 @@ const development = {
 
 const production = {
   env: {
-    API_URL: "http://localhost:5036/api/",
+    API_URL: "http://147.79.110.137:6030/api/",
     version: version
   }
 }
