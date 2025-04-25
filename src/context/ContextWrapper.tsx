@@ -19,7 +19,6 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     function setCookieLoggedUser(user: iLoggedUser) {
         setLoggedUser(user);
         const expires = new Date(Date.now() + 1000 * 60 * 60);
-        setCookie("UC", btoa(JSON.stringify(user.segmento)), { expires, sameSite: "strict" });
         setCookie("UP", btoa(JSON.stringify(user.perfil)), { expires, sameSite: "strict" });
         setCookie("UID", btoa(JSON.stringify(user.codigo)), { expires, sameSite: "strict" });
     }
