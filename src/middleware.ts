@@ -10,6 +10,10 @@ export function middleware(request: NextRequest) {
 
     const completeUrl = request.nextUrl.clone().toString();
 
+    console.log("cookie", cookie)
+    console.log("path", path)
+    console.log("IsPrivate", isPrivate)
+
     if (
         completeUrl === "https://leapcert.com.br/"
     ) {
