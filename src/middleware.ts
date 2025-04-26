@@ -1,33 +1,45 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
-const privateRoutes = ["/home"];
+const publicRouter = [
+    { path: "/leapcert", whenAuthenticated: "next" },
+    { path: "/", whenAuthenticated: "next" },
+    { path: "/cadastro", whenAuthenticated: "redirect" },
+    { path: "/login", whenAuthenticated: "redirect" }
+] as const;
+
+const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/login";
 
 export function middleware(request: NextRequest) {
-    const cookie = request.cookies ? request.cookies.get("accessToken") : null;
-
     const path = request.nextUrl.pathname;
-    const isPrivate = privateRoutes.includes(path);
+    const publicRoute = publicRouter.find(route => route.path === path);
+    const authToken = request.cookies.get("accessToken")
 
-    const completeUrl = request.nextUrl.clone().toString();
-
-    console.log("cookie", cookie)
-    console.log("path", path)
-    console.log("IsPrivate", isPrivate)
-
-    if (
-        completeUrl === "https://leapcert.com.br/"
-    ) {
+    if (!authToken && publicRoute)
         return NextResponse.next();
+
+    if (!authToken && !publicRoute) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
+
+        return NextResponse.redirect(redirectUrl);
     }
 
-    if (isPrivate && (!cookie || !cookie.value)) {
-        console.log("Desconectado: Sua sessão expirou, faça login novamente");
-        return NextResponse.redirect(new URL(`/`, request.nextUrl.origin));
+    if (authToken && publicRoute && publicRoute.whenAuthenticated == "redirect") {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/home";
+
+        return NextResponse.redirect(redirectUrl);
     }
+
+    // TODO: falta fazer uma função de validar o token
+    if (authToken && !publicRoute)
+        return NextResponse.next()
 
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)", "/"],
-};
+    matcher: [
+        '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    ],
+}
