@@ -15,7 +15,7 @@ interface UserType {
 async function addUser(newUser: UserType) {
     const response = await api.post("user/addUser", newUser);
 
-    if (!response.data.success) {
+    if (!response.data.flag) {
         toast.error("Erro ao criar usuário", {
             description: response.data.message,
             duration: 5000,
