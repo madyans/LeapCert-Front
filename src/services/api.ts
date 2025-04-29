@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import Router from "next/router";
+import { redirect } from 'next/navigation';
 
 const api: AxiosInstance = axios.create({
     baseURL: process.env.API_URL,
@@ -11,7 +11,7 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            Router.push("/"); // Redireciona para a página de login
+            redirect("/"); // Redireciona para a página de login
         }
 
         if (error.response === "Necessario informar o endereço da visita") {
