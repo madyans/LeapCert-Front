@@ -33,9 +33,9 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(redirectUrl);
     }
 
-    if (authToken && !publicRoute)
-        return NextResponse.next();
-
+    if (authToken && !publicRoute) {
+        return NextResponse.next()
+    }
 
     return NextResponse.next();
 }

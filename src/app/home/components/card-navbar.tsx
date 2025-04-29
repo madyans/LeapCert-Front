@@ -1,8 +1,12 @@
 import { Card } from "@/src/components/ui/card";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
 import sapoHi from "../../../../public/sapoHi.png";
 
 export default function CardNavBar() {
+    const cookie = getCookie("UU") as string | undefined;
+    const userName = cookie ? JSON.parse(atob(cookie)) : "";
+
     return (
         <Card className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 bg-white">
             <Image
@@ -13,7 +17,7 @@ export default function CardNavBar() {
                 className="rounded-md"
             />
             <div className="flex flex-col justify-center">
-                <p className="text-base font-medium text-gray-800">Nome do Aluno</p>
+                <p className="text-base font-medium text-gray-800">{userName}</p>
                 <p className="text-sm text-gray-600">Interesses: Desenvolvimento, IA</p>
                 <p className="text-sm text-gray-600">Cursos ministrados: Algoritmos</p>
             </div>

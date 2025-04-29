@@ -21,6 +21,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
         const expires = new Date(Date.now() + 1000 * 60 * 60);
         setCookie("UP", btoa(JSON.stringify(user.perfil)), { expires, sameSite: "strict" });
         setCookie("UID", btoa(JSON.stringify(user.codigo)), { expires, sameSite: "strict" });
+        setCookie("UU", btoa(JSON.stringify(user.usuario)), { expires, sameSite: "strict" });
     }
 
     return (
