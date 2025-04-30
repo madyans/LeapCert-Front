@@ -17,6 +17,7 @@ export default async function ValidateToken({ token }: { token?: { value: string
         (await cookie).delete("accessToken");
         (await cookie).delete("UID");
         (await cookie).delete("UP");
+        (await cookie).delete("UU");
     }
 
     return data.flag;
