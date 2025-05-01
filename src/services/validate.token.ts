@@ -12,7 +12,6 @@ export default async function ValidateToken({ token }: { token?: { value: string
     });
 
     const data = await res.json();
-    console.log("dentro do validate", data)
 
     if (!data.flag) {
         (await cookie).delete("accessToken");
