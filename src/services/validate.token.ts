@@ -13,8 +13,6 @@ export default async function ValidateToken({ token }: { token?: { value: string
 
     const data = await res.json();
 
-    console.log("teste data", data)
-
     if (!data.flag) {
         (await cookie).delete("accessToken");
         (await cookie).delete("UID");
