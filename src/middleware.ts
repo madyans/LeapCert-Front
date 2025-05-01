@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     const authToken = request.cookies.get("accessToken")
 
     if (!authToken && !publicRoute?.isPublic) {
+        console.log("!authToken && !publicRoute?.isPublic")
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
 
@@ -25,6 +26,7 @@ export async function middleware(request: NextRequest) {
 
     const isValid = await ValidateToken({ token: authToken });
     if (authToken && !isValid) {
+        console.log("authToken && !isValid")
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
         return NextResponse.redirect(redirectUrl);
