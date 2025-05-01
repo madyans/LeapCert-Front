@@ -25,6 +25,9 @@ export async function middleware(request: NextRequest) {
     }
 
     const isValid = await ValidateToken({ token: authToken });
+    console.log(isValid, !isValid)
+    console.log(authToken)
+
     if (authToken && !isValid) {
         console.log("authToken && !isValid")
         const redirectUrl = request.nextUrl.clone();
