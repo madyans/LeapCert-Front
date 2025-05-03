@@ -23,6 +23,7 @@ import useQueryGetAllClasses from "./hooks/useQueryGetAllClass";
 export default function Page() {
     const router = useRouter()
     const { data: cursos, isLoading } = useQueryGetAllClasses();
+    const cursosArray = Array.isArray(cursos) ? cursos : [];
 
     const renderSkeletons = () => {
         return Array.from({ length: 6 }).map((_, idx) => (
@@ -34,13 +35,13 @@ export default function Page() {
         <div key={Math.random()} className={`${dsp} flex flex-wrap gap-6 justify-center pb-8`}>
             {isLoading
                 ? renderSkeletons()
-                : cursos != undefined && cursos.map((curso, idx) => (
-                    <>
+                : cursos != undefined && cursosArray.map((curso, idx) => (
+                    <div key={idx}>
                         <TooltipProvider>
                             <Tooltip key={curso.codigo}>
                                 <TooltipTrigger asChild>
                                     <Card
-                                        onClick={() => router.push("/")}
+                                        onClick={() => router.push(`/home/cursos/${curso.codigo}`)}
                                         key={idx}
                                         className="w-64 h-80 bg-secondary border border-primary/20 rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 hover:bg-primary hover:text-primary-foreground cursor-pointer overflow-hidden"
                                     >
@@ -80,7 +81,7 @@ export default function Page() {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                    </>
+                    </div>
                 ))}
         </div>
     );
