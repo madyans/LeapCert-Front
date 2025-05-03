@@ -1,5 +1,6 @@
 'use client';
 
+import LucideIcon from "@/src/components/createdComponents/lucide-icon";
 import { Button } from "@/src/components/ui/button";
 import {
     Sidebar,
@@ -12,31 +13,17 @@ import {
     SidebarMenuButton,
     SidebarMenuItem
 } from "@/src/components/ui/sidebar";
-import {
-    Calendar,
-    Home,
-    Inbox,
-    Search,
-    Settings
-} from "lucide-react";
+import { Skeleton } from "@/src/components/ui/skeleton";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import teste from "../../../../public/TESTE.png";
 import useQueryGetModules from "../hooks/useQueryGetModules";
+import IModules from "../interface/IModules";
 import CardNavBar from "./card-navbar";
 
 export function AppSidebar() {
     const router = useRouter();
-    const { data: modules } = useQueryGetModules()
-    console.log("data", modules)
-
-    const items = [
-        { title: "Home", url: "/home", icon: Home },
-        { title: "Área do aluno", url: "/home/aluno", icon: Calendar },
-        { title: "Área do professor", url: "/home/professor", icon: Search },
-        { title: "Cursos", url: "/home/cursos", icon: Settings },
-        { title: "Configuração", url: "/home/configuracao", icon: Inbox },
-    ];
+    const { data: modules, isLoading } = useQueryGetModules();
 
     return (
         <Sidebar>
@@ -53,17 +40,26 @@ export function AppSidebar() {
 
                         <SidebarGroupContent className="mt-2">
                             <SidebarMenu>
-                                {items.map((item) => (
-                                    <SidebarMenuItem key={item.title} className="border rounded">
+                                {isLoading ? (
+                                    Array.from({ length: 4 }).map((_, idx) => (
+                                        <SidebarMenuItem key={idx} className="border rounded">
+                                            <Skeleton className="h-10 w-full" />
+                                        </SidebarMenuItem>
+                                    ))
+                                ) : modules?.map((item: IModules) => (
+                                    <SidebarMenuItem key={item.codigo} className="border rounded">
                                         <SidebarMenuButton asChild>
                                             <Button
-                                                onClick={() => router.push(item.url)}
+                                                onClick={() => router.push(item.rota)}
                                                 variant="outline"
                                                 className="flex flex-row justify-start gap-3 transition-colors duration-300 border-gray-300 hover:bg-gray-100 hover:border-gray-500 focus:ring-2 focus:ring-gray-400"
                                             >
-                                                <item.icon className="text-gray-700 transition-colors duration-300 group-hover:text-black" />
+                                                <LucideIcon
+                                                    icon={item.icone}
+                                                    className="text-gray-700 transition-colors duration-300 group-hover:text-black"
+                                                />
                                                 <p className="font-semibold text-gray-800 transition-colors duration-300 group-hover:text-black">
-                                                    {item.title}
+                                                    {item.nome}
                                                 </p>
                                             </Button>
                                         </SidebarMenuButton>
