@@ -1,10 +1,14 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import Cookies from 'js-cookie';
 import { redirect } from 'next/navigation';
+
+const authToken = Cookies.get("authToken");
 
 const api: AxiosInstance = axios.create({
     baseURL: process.env.API_URL,
     withCredentials: true,
     timeout: 90000,
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
 });
 
 api.interceptors.response.use(

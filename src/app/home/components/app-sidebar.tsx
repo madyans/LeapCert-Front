@@ -22,10 +22,13 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import teste from "../../../../public/TESTE.png";
+import useQueryGetModules from "../hooks/useQueryGetModules";
 import CardNavBar from "./card-navbar";
 
 export function AppSidebar() {
     const router = useRouter();
+    const { data: modules } = useQueryGetModules()
+    console.log("data", modules)
 
     const items = [
         { title: "Home", url: "/home", icon: Home },
