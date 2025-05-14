@@ -6,4 +6,5 @@ export default interface IClass {
     nome: string
     codigo_genero: number
     genero: string
+    path: string
 }

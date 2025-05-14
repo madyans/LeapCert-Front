@@ -1,0 +1,1 @@
+export const uri_proxy = `${process.env.API_URL}minio/proxyImage?bucketId=leapcert&objectName=`
