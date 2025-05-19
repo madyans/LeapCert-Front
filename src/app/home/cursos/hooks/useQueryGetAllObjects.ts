@@ -1,6 +1,7 @@
 import api from "@/src/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { ObjectType } from "../interface/ObjectType";
 
 async function getObjects(bucketName: string, prefix?: string) {
     try {
@@ -20,7 +21,8 @@ async function getObjects(bucketName: string, prefix?: string) {
             return [];
         }
 
-        return response.data.data;
+        const data: ObjectType[] = response.data.data
+        return data;
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : "Tente novamente mais tarde.";
         toast.error("Erro de conexão com o servidor", {
