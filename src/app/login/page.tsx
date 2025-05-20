@@ -45,7 +45,6 @@ export default function Page() {
         const updateEyes = () => {
             if (!frogRef.current || !leftEyeRef.current || !rightEyeRef.current) return
 
-            const frogRect = frogRef.current.getBoundingClientRect()
             const leftEyeRect = leftEyeRef.current.getBoundingClientRect()
             const rightEyeRect = rightEyeRef.current.getBoundingClientRect()
 

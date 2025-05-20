@@ -82,7 +82,7 @@ export default function Cadastro() {
 
         toast.promise(mutateAsync(userToSend), {
             loading: "Criando sua conta...",
-            success: (data) => {
+            success: () => {
                 setTimeout(() => {
                     router.push("/login")
                 }, 2000)
@@ -93,9 +93,13 @@ export default function Cadastro() {
     }
 
     const nextStep = () => {
-        const fieldsToValidate = currentStep === 1 ? ["nome", "email", "usuario"] : ["senha", "confirmar_senha"]
+        const fieldsToValidate: Array<"nome" | "email" | "usuario" | "senha" | "confirmar_senha"> = [
+            "nome",
+            "email",
+            "usuario"
+        ]
 
-        form.trigger(fieldsToValidate as any).then((isValid) => {
+        form.trigger(fieldsToValidate).then((isValid) => {
             if (isValid) {
                 setCurrentStep(currentStep + 1)
             }
