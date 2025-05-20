@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <>
-            <div className={`${dsp} flex flex-row items-center gap-4 mb-1`}>
+            <div className={`${dsp} flex flex-row items-center gap-4`}>
                 <Button
                     variant="ghost"
                     className="p-1 rounded-full hover:bg-gray-200"
