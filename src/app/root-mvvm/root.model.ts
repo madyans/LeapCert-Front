@@ -1,11 +1,9 @@
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { courses } from "./constants"
 
 export const useRootModel = () => {
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("all")
-    const router = useRouter()
 
     const filteredCourses = courses.filter((course) => {
         const matchesSearch =
@@ -18,7 +16,6 @@ export const useRootModel = () => {
     return {
         searchTerm, setSearchTerm,
         selectedCategory, setSelectedCategory,
-        router,
         filteredCourses
     }
 }

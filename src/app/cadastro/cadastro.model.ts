@@ -8,11 +8,11 @@ import useMutateAddUser from "./hooks/mutations/useMutateAddUser"
 import { formSchema } from "./interface/cadastroType"
 
 export const useCadastroModel = () => {
-    const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [currentStep, setCurrentStep] = useState(1)
     const [agreedToTerms, setAgreedToTerms] = useState(false)
+    const router = useRouter()
 
     const { mutateAsync, isPending } = useMutateAddUser()
 

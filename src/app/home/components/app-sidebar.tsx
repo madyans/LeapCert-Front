@@ -29,8 +29,8 @@ import IModules from "../interface/IModules";
 import CardNavBar from "./card-navbar";
 
 export function AppSidebar() {
-    const router = useRouter();
     const { data: modules, isLoading } = useQueryGetModules();
+    const router = useRouter()
 
     return (
         <Sidebar>

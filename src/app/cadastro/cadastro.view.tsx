@@ -5,6 +5,7 @@ import { Input } from "@/src/components/ui/input"
 import { AtSignIcon, CheckIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { FormProvider } from "react-hook-form"
 import Fundo from "../../../public/fundoMassaMasTaClaro.png"
 import sapoOi from "../../../public/sapoHi.png"
@@ -22,13 +23,13 @@ export const CadastroView = (props: CadastroViewProps) => {
         setShowPassword,
         agreedToTerms,
         form,
-        router,
         isPending,
         showConfirmPassword,
         showPassword,
         currentStep
     } = props
 
+    const router = useRouter()
     const totalSteps = 2
 
     return (
