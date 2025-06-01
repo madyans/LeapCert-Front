@@ -1,6 +1,6 @@
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { Suspense } from "react";
-import CourseClientView from "../components/course-client-view";
+import CourseClientView from "./components/course-client-view";
 
 export default async function Page({ params }: { params: Promise<{ classId: number }> }) {
     const { classId } = await params;
