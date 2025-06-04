@@ -1,4 +1,5 @@
 import { uri_proxy } from "@/src/constants/URL_PROXYIMAGE"
+import { getCookie } from "cookies-next"
 import { useState } from "react"
 import { learningPathData, notesData } from "../constants/mock"
 import { ContentType, SelectedObject } from "../constants/types"
@@ -16,6 +17,10 @@ export const useCursosIdModel = (classId: number) => {
     const [notes, setNotes] = useState(notesData)
     const [messageToInstructor, setMessageToInstructor] = useState<string>("")
     const [forumSearch, setForumSearch] = useState<string>("")
+    const [control, setControl] = useState<boolean>(false)
+
+    const cookie = getCookie("UID");
+    const userId = cookie ? JSON.parse(atob(cookie as string)) : null;
 
     const { data: course, isLoading, isError } = useQueryGetClassById(classId)
 
@@ -74,6 +79,8 @@ export const useCursosIdModel = (classId: number) => {
         return ContentType.Unsupported
     }
 
+    const isLoggedUserTeacher = Number(userId) === course?.codigo_professor
+
     return {
         selectedObject,
         setSelectedObject,
@@ -103,5 +110,7 @@ export const useCursosIdModel = (classId: number) => {
         calculateProgress,
         fileUrl,
         getContentType,
+        isLoggedUserTeacher,
+        control, setControl
     }
 }
