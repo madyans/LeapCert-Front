@@ -15,10 +15,7 @@ async function getGenders() {
         return [];
     }
 
-    const genders = response.data.data.map((item: IGender) => ({
-        label: item.nome,
-        value: item.codigo
-    }));
+    const genders: IGender[] = response.data.data;
 
     return genders;
 

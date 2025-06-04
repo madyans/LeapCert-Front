@@ -2,9 +2,9 @@ import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
 import { Input } from "@/src/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { Separator } from "@/src/components/ui/separator"
 import { Textarea } from "@/src/components/ui/textarea"
+import { IGender } from "@/src/interface/general/type-gender"
 import { BookOpen, FileText, Save, Tag, Type } from "lucide-react"
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 import { UseFormReturn } from "react-hook-form"
@@ -14,7 +14,7 @@ import { createSchema } from "../create.schema"
 interface iProps {
     form: UseFormReturn<z.infer<typeof createSchema>>
     onSubmit: (values: z.infer<typeof createSchema>) => void
-    dataGenders: { label: string, value: string }[]
+    dataGenders: IGender[] | undefined
     isLoadingGenders: boolean
     router: AppRouterInstance
     isPending: boolean
@@ -72,23 +72,19 @@ export const FormCreate = ({ form, onSubmit, dataGenders, isLoadingGenders, rout
                                         </FormLabel>
                                         <FormControl>
                                             <div className="relative">
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    value={field.value.toString()}
+                                                <select
+                                                    value={field.value}
+                                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                                    className="w-full border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                                     disabled={isLoadingGenders}
                                                 >
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecione a categoria do curso" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {dataGenders.map((item) => (
-                                                            <SelectItem key={item.value} value={item.value}>
-                                                                {item.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-
+                                                    <option value="">Selecione a categoria do curso</option>
+                                                    {dataGenders && dataGenders.map((item: IGender, idx: number) => (
+                                                        <option key={idx} value={item.codigo}>
+                                                            {item.nome}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                                 {isLoadingGenders && (
                                                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                                                         <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
