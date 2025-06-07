@@ -18,30 +18,30 @@ export const LeaftTab = ({ image }: iProps) => {
                     <div className="mt-2">
                         <div className="font-semibold text-green-600">Certificações:</div>
                         <div className="text-xs text-zinc-600">
-                            Diploma em Gastronomia Toscana (Università dei Sapori), Certificação Slow Food
+                            Microsoft Certified: Azure Developer Associate, AWS Certified Developer – Associate
                         </div>
                     </div>
                     <div className="mt-2">
                         <div className="font-semibold text-green-600">Habilidades:</div>
                         <div className="text-xs text-zinc-600">
-                            Massas artesanais, molhos tradicionais, culinária regional italiana
+                            .NET 8, MinIO, Armazenamento em Nuvem, APIs REST, Docker, Entity Framework Core
                         </div>
                     </div>
                     <div className="mt-2">
                         <div className="font-semibold text-green-600">Experiência profissional:</div>
                         <div className="text-xs text-zinc-600">
-                            Chefe em uma villa na Toscana onde aprendeu a fazer massa com minha nonna
+                            Mais de 10 anos desenvolvendo soluções escaláveis com .NET, com foco em integrações com serviços em nuvem e armazenamento distribuído
                         </div>
                     </div>
                     <div className="mt-2">
                         <div className="font-semibold text-green-600">Cursos ministrados:</div>
                         <div className="text-xs text-zinc-600">
-                            Massas Frescas Italianas, Sabores da Sicília, Risotto Clássico, Molhos e Técnicas da Cozinha
-                            Italiana
+                            APIs REST com .NET, Armazenamento com MinIO e S3, Arquitetura de Microsserviços com .NET 8, Integração de Serviços em Nuvem
                         </div>
                     </div>
                 </div>
             </div>
+
         </>
     )
 }

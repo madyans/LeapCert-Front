@@ -7,3 +7,9 @@ export enum ActiveTab {
     Certificados = "certificados",
     Professor = "professor"
 }
+
+export interface FileWithPreview extends File {
+    preview?: string
+    id: string
+    uploadProgress?: number
+}

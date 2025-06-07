@@ -10,26 +10,15 @@ export const CenterTab = ({ calculateProgress }: iProps) => {
             <div className="col-span-3 bg-white rounded-md p-6 border h-full">
                 <div className="prose max-w-none text-black">
                     <p>
-                        Neste curso, vamos explorar a fundo os fundamentos da cozinha italiana através de seus molhos mais
-                        clássicos e as técnicas que transformam ingredientes simples em pratos extraordinários. Cada aula
-                        será acompanhada de vídeos de alta qualidade, com passo a passo detalhado para que você possa
-                        acompanhar e praticar do conforto da sua casa.
+                        Neste curso, vamos explorar a fundo os fundamentos do <strong>MinIO</strong> e como integrá-lo de forma eficiente em aplicações modernas desenvolvidas com <strong>.NET 8</strong>. Cada aula será acompanhada de vídeos de alta qualidade, com passo a passo detalhado para que você possa acompanhar e praticar do conforto da sua casa.
                     </p>
                     <p>
-                        Você vai aprender a preparar molhos como o sugo al pomodoro, pesto genovês, ragù alla bolognese,
-                        bechamel, entre outros – todos com base nas receitas tradicionais italianas. Também vamos abordar
-                        técnicas essenciais, como o ponto perfeito da massa, a importância do tempo de cozimento, e como
-                        equilibrar sabores com o uso correto de ervas e finalização. Além dos molhos, o curso traz dicas
-                        valiosas de apresentação e finalização dos pratos, para que sua comida encante tanto o paladar
-                        quanto os olhos.
+                        Você vai aprender a configurar o MinIO localmente e na nuvem, realizar operações com buckets e objetos, aplicar políticas de acesso, versionamento, segurança com credenciais, e integração completa com APIs desenvolvidas em .NET 8. Também vamos abordar conceitos essenciais como boas práticas de upload/download de arquivos, uso de streams, e como lidar com arquivos grandes em aplicações web e backend.
                     </p>
                     <p>
-                        E por fim, como seu professor, quero dizer uma coisa: cozinhar é um ato de amor, de paciência e de
-                        dedicação. Cada molho que você prepara conta uma história, carrega uma tradição. Não tenha medo de
-                        errar, porque é cozinhando que a gente aprende — e é com paixão que a gente se destaca. Vamos juntos
-                        transformar sua cozinha em uma verdadeira cantina italiana!
+                        E por fim, como seu instrutor, quero dizer uma coisa: programar é um ato de construção, de curiosidade e de evolução contínua. Cada endpoint que você cria, cada arquivo que armazena, conta uma história de aprendizado. Não tenha medo de errar — é codando que a gente aprende, e é com dedicação que a gente se destaca. Vamos juntos transformar seu conhecimento em uma ferramenta poderosa para o futuro!
                     </p>
-                    <p className="text-green-600 font-italic">Ci vediamo nella prima lezione! 👨‍🍳</p>
+                    <p className="text-green-600 font-italic">Nos vemos na primeira aula! 💻🚀</p>
                 </div>
 
                 <div className="mt-6 p-4 bg-green-50 rounded-md border border-green-100">

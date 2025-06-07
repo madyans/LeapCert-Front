@@ -14,7 +14,7 @@ export const CreateClassView = (props: CreateClassViewProps) => {
     if (isLoadingGenders) return null;
 
     return (
-        <div className={`${dsp} space-y-8`}>
+        <div className={`${dsp} space-y-2 bg-zinc-50 rounded`}>
             <Header router={router} />
 
             <div className="max-w-2xl mx-auto">

@@ -120,7 +120,7 @@ export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumS
             )}
 
             {activeTab === ActiveTab.Conteudos && (
-                <div className="mt-6 border rounded-md bg-white text-black">
+                <div className="mt-6 border rounded-md bg-white text-black h-72">
                     <div className="p-3 border-b font-medium">Materiais do Curso</div>
                     <div className="p-3">
                         {isLoadingObjects ? (
@@ -130,24 +130,26 @@ export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumS
                                 <Skeleton className="h-8 w-full" />
                             </div>
                         ) : objects && objects.length > 0 ? (
-                            <ScrollArea className="h-[auto] pr-4">
-                                <ul className="space-y-1">
-                                    {objects.map((obj: ObjectType, idx: number) => (
-                                        <li key={idx}>
-                                            <button
-                                                onClick={() => handleClick(obj)}
-                                                className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors
-                                                                ${selectedObject?.name === obj.objectName
-                                                        ? "bg-green-50 text-green-700 font-medium"
-                                                        : "hover:bg-zinc-50"
-                                                    }`}
-                                            >
-                                                {getFileIcon(obj.contentType)}
-                                                <span className="truncate text-sm">{obj.objectName}</span>
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
+                            <ScrollArea className="h-52 w-full pr-4">
+                                <div className="min-w-[600px]"> {/* força largura maior que o container */}
+                                    <ul className="space-y-1">
+                                        {objects.map((obj: ObjectType, idx: number) => (
+                                            <li key={idx}>
+                                                <button
+                                                    onClick={() => handleClick(obj)}
+                                                    className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2 transition-colors
+              ${selectedObject?.name === obj.objectName
+                                                            ? "bg-green-50 text-green-700 font-medium"
+                                                            : "hover:bg-zinc-50"
+                                                        }`}
+                                                >
+                                                    {getFileIcon(obj.contentType)}
+                                                    <span className="text-sm whitespace-nowrap overflow-auto">{obj.objectName}</span>
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </ScrollArea>
                         ) : (
                             <p className="text-sm text-muted-foreground py-2">Nenhum material disponível.</p>
