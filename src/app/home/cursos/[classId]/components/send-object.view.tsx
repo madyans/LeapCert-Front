@@ -122,7 +122,6 @@ export default function FileUpload(props: CourseClientViewProps) {
                     </CardContent>
                 </Card>
 
-                {/* Files List with enhanced design */}
                 {files.length > 0 && (
                     <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
                         <CardContent className="p-8">

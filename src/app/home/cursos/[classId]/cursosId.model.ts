@@ -122,6 +122,7 @@ export const useCursosIdModel = (classId: number) => {
         }
 
         setIsUploading(false);
+        setFiles([]);
         console.log("Upload completo para todos os arquivos.");
     };
 
