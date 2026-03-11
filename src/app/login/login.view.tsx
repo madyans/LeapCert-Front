@@ -37,7 +37,7 @@ export const LoginView = (props: LoginViewType) => {
                     showPassword={showPassword}
                 />
 
-                <div className="text-center mt-6 text-green-200 text-sm">© 2025 LeapCert. Todos os direitos reservados.</div>
+                <div className="text-center mt-6 text-green-200 text-sm">© 2026 LeapCert. Todos os direitos reservados.</div>
             </div>
         </div>
     )
