@@ -1,4 +1,5 @@
 import { SearchIcon, UserIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface iProps {
@@ -9,42 +10,55 @@ interface iProps {
 export const Header = ({ searchTerm, setSearchTerm }: iProps) => {
 
     return (
-        <>
-            <header className="bg-emerald-900 text-white w-full py-6 px-4 flex flex-col items-center shadow-md gap-1">
-                <Link href="/" className="text-5xl font-extrabold tracking-wide drop-shadow-xl">
-                    Leap<span className="text-green-300">Cert</span>
-                </Link>
-                <h3 className="text-lg font-medium opacity-90 italic tracking-wide">
-                    Um <span className="text-green-300">salto</span> para o próximo nível do seu aprendizado
-                </h3>
-            </header>
-
-            <div className="bg-emerald-800 text-white py-4 px-6">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-                    <h2 className="text-2xl font-bold">Nossos Cursos</h2>
-                    <div className="flex items-center gap-2">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Buscar cursos..."
-                                className="py-2 px-4 pr-10 rounded-full bg-emerald-700 text-white placeholder-emerald-200 border border-emerald-600 focus:outline-none focus:ring-2 focus:ring-green-300 w-full md:w-64"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                                <SearchIcon className="h-5 w-5 text-emerald-300" />
-                            </div>
-                        </div>
-                        <Link
-                            href="/login"
-                            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-full transition-colors duration-200 flex items-center gap-1"
-                        >
-                            <UserIcon className="h-4 w-4" />
-                            <span>Entrar</span>
-                        </Link>
+        <header className="w-full bg-gradient-to-b from-emerald-950/95 via-emerald-900 to-emerald-900 text-white shadow-lg border-b border-emerald-800/80">
+            <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+                <Link href="/" className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-2xl overflow-hidden bg-emerald-500 flex items-center justify-center shadow-lg ring-2 ring-emerald-300/70">
+                        <Image
+                            src="/favicon.ico"
+                            alt="Logo LeapCert"
+                            width={40}
+                            height={40}
+                            className="object-contain"
+                            priority
+                        />
                     </div>
+                    <div className="flex flex-col leading-tight">
+                        <span className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                            Leap<span className="text-green-300">Cert</span>
+                        </span>
+                        <span className="text-xs sm:text-sm text-emerald-100/80">
+                            Um salto para o próximo nível do seu aprendizado
+                        </span>
+                    </div>
+                </Link>
+
+                <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <Link href="/" className="relative text-emerald-50 hover:text-green-300 transition-colors">
+                        Início
+                    </Link>
+                    <a href="#featured" className="relative text-emerald-50 hover:text-green-300 transition-colors">
+                        Destaques
+                    </a>
+                    <a href="#courses" className="relative text-emerald-50 hover:text-green-300 transition-colors">
+                        Cursos
+                    </a>
+                    <Link href="/leapcert" className="relative text-emerald-50 hover:text-green-300 transition-colors">
+                        Sobre
+                    </Link>
+                </nav>
+
+                <div className="flex items-center gap-3">
+                    <Link
+                        href="/login"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-semibold text-xs sm:text-sm px-4 py-2 shadow-lg shadow-emerald-500/30 transition-colors"
+                    >
+                        <UserIcon className="h-4 w-4" />
+                        <span>Login</span>
+                    </Link>
                 </div>
             </div>
-        </>
+
+        </header>
     )
 }

@@ -20,6 +20,8 @@ export const RootPage = (props: RootViewProps) => {
             <Main
                 filteredCourses={filteredCourses}
                 router={router}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
             />
