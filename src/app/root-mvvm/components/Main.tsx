@@ -1,13 +1,11 @@
 import { Button } from "@/src/components/ui/button"
 import { ChevronLeft, ChevronRight, ClockIcon, SearchIcon } from "lucide-react"
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import { categories, courses, CourseType } from "../constants"
 
 interface iProps {
-    router: AppRouterInstance
     searchTerm: string
     setSearchTerm: (id: string) => void
     selectedCategory: string
@@ -16,7 +14,7 @@ interface iProps {
 
 }
 
-export const Main = ({ router, searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredCourses }: iProps) => {
+export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredCourses }: iProps) => {
     const heroCourses = useMemo(
         () => courses.filter((course) => course.featured),
         []
