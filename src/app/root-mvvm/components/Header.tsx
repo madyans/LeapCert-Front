@@ -1,14 +1,8 @@
-import { SearchIcon, UserIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-interface iProps {
-    searchTerm: string,
-    setSearchTerm: (e: string) => void
-}
-
-export const Header = ({ searchTerm, setSearchTerm }: iProps) => {
-
+export const Header = () => {
     return (
         <header className="w-full bg-gradient-to-b from-emerald-950/95 via-emerald-900 to-emerald-900 text-white shadow-lg border-b border-emerald-800/80">
             <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
