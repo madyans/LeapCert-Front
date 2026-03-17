@@ -146,7 +146,7 @@ export const useCursosIdModel = (classId: number) => {
         console.log("Number(userId)", Number(userId))
         console.log("course?.codigo_professor", course?.codigo_professor)
         setIsLoggedUserTeacher(Number(userId) === course?.codigo_professor)
-    }, [course])
+    }, [course, userId])
 
     const { data: objects, isLoading: isLoadingObjects } = useQueryGetAllObjects(
         "leapcert",

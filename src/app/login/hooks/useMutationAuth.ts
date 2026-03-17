@@ -2,6 +2,20 @@ import { LoginService } from "@/src/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+interface LoginSuccessData {
+    codigo: number;
+    nome: string;
+    perfil: number;
+    usuario: string;
+}
+
+interface LoginResponse {
+    flag: boolean;
+    data: LoginSuccessData;
+    accessToken: string;
+    message?: string;
+}
+
 async function Login({
     usuario,
     senha,
@@ -10,15 +24,14 @@ async function Login({
     senha: string;
 }) {
     const response = await LoginService({ usuario, senha });
-
-    const loginResponse = response?.data;
+    const loginResponse: LoginResponse | null = response?.data ?? null;
     console.log("===== raw response ======", response);
 
     console.log("Login response", loginResponse);
 
-    if (!loginResponse?.flag) {
+    if (!loginResponse || !loginResponse.flag) {
         console.log("Error!!");
-        throw new Error(loginResponse[0]?.message);
+        throw new Error(loginResponse?.message || "Senha ou usuário incorretos");
     }
 
     console.log("Success!!");

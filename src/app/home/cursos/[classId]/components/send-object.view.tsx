@@ -3,6 +3,7 @@ import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
 import { Archive, ArrowLeft, CheckCircle2, Cloud, File, FileText, ImageIcon, Upload, Video, X } from "lucide-react"
+import Image from "next/image"
 import type { CourseClientViewProps } from "../corsosId.view"
 
 export default function FileUpload(props: CourseClientViewProps) {
@@ -170,9 +171,12 @@ export default function FileUpload(props: CourseClientViewProps) {
                                         <div className="flex-shrink-0 relative">
                                             {file.preview ? (
                                                 <div className="relative">
-                                                    <img
+                                                    <Image
                                                         src={file.preview || "/placeholder.svg"}
                                                         alt={file.name}
+                                                        width={64}
+                                                        height={64}
+                                                        unoptimized={true}
                                                         className="h-16 w-16 object-cover rounded-xl shadow-md border-2 border-white"
                                                     />
                                                     <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
