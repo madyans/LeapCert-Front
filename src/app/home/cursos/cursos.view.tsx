@@ -47,6 +47,9 @@ export const CursosView = (props: CursosViewType) => {
                         />
                     </div>
                     <div className="flex gap-3">
+                        <Button variant="outline" size="sm" className="gap-2" onClick={() => router.push("/home")}>
+                            Voltar ao Dashboard
+                        </Button>
                         <Button variant="outline" size="sm" className="gap-2">
                             <Filter className="w-4 h-4" />
                             Filtros
