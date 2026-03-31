@@ -31,17 +31,18 @@ RUN pnpm install --frozen-lockfile
 FROM base_image AS builder_image
 WORKDIR /app
 
-# Primeiro, copiar o código fonte
+ARG NEXT_PUBLIC_API_URL=http://98.90.231.160:6030/api/
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+ARG environment=production
+
 COPY --chown=nextjs:nodejs . .
 
-# Depois, copiar node_modules da etapa anterior
 COPY --from=dependency_image --chown=nextjs:nodejs /app/node_modules ./node_modules
 
-# Configurar ambiente
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=$environment
+ENV NODE_ENV=${environment}
 
-# Trocar para usuário nextjs e fazer o build
 USER nextjs
 RUN pnpm build
 
@@ -51,8 +52,9 @@ RUN pnpm build
 FROM base_image AS production_image
 WORKDIR /app
 
-# Configurar ambiente
-ENV NODE_ENV=$environment
+ARG environment=production
+
+ENV NODE_ENV=${environment}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 

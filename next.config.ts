@@ -1,7 +1,7 @@
 const version = '1.2.1';
 
 const devApiUrl = 'http://localhost:5036/api/';
-const prodApiUrlDefault = 'http://98.90.231.160:8081/api/';
+const prodApiUrlDefault = 'http://98.90.231.160:6030/api/';
 
 const development = {
   env: {

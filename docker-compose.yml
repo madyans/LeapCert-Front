@@ -4,6 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        environment: production
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://98.90.231.160:6030/api/}
     image: leapcert-front:${IMAGE_TAG:-latest}
     container_name: leapcert-front
     ports:
@@ -14,3 +17,4 @@ services:
 
 networks:
   leapcert-network:
+    external: true
