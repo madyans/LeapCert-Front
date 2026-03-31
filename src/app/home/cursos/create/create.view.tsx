@@ -9,7 +9,15 @@ type CreateClassViewProps = ReturnType<typeof useCreateClassModel>
 
 export const CreateClassView = (props: CreateClassViewProps) => {
     const router = useRouter()
-    const { dataGenders, form, isLoadingGenders, isPending, onSubmit } = props
+    const {
+        dataGenders,
+        form,
+        isLoadingGenders,
+        isPending,
+        onSubmit,
+        videoFile,
+        onVideoFileChange,
+    } = props
 
     if (isLoadingGenders) return null;
 
@@ -25,7 +33,9 @@ export const CreateClassView = (props: CreateClassViewProps) => {
                     isLoadingGenders={isLoadingGenders}
                     isPending={isPending}
                     onSubmit={onSubmit}
+                    onVideoFileChange={onVideoFileChange}
                     router={router}
+                    videoFile={videoFile}
                 />
 
                 <Footer />

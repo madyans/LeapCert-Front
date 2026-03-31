@@ -1,4 +1,4 @@
-import { uri_proxy } from "@/src/constants/URL_PROXYIMAGE"
+import api from "@/src/services/api"
 import { getCookie } from "cookies-next"
 import { useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -7,13 +7,35 @@ import { ContentType, SelectedObject } from "../constants/types"
 import useMutateSendObject from "../hooks/mutations/useMutateSendObject"
 import useQueryGetAllObjects from "../hooks/useQueryGetAllObjects"
 import useQueryGetClassById from "../hooks/useQueryGetClassById"
-import useQueryGetObject from "../hooks/useQueryGetObject"
 import { ObjectType } from "../interface/ObjectType"
 import { FileWithPreview } from "./cursosId.interface"
+
+function parseProfessorIdFromCookie(raw: unknown): number | null {
+    if (raw == null || raw === "") {
+        return null;
+    }
+    try {
+        const decoded = JSON.parse(atob(String(raw)));
+        const n = typeof decoded === "number" ? decoded : Number(decoded);
+        if (!Number.isFinite(n) || n < 1) {
+            return null;
+        }
+        return n;
+    } catch {
+        return null;
+    }
+}
+
+function buildObjectStorageKey(coursePath: string | null | undefined, objectRelativeName: string): string {
+    const rel = objectRelativeName.replace(/^\/+/, "");
+    const base = (coursePath ?? "").trim().replace(/\/+$/, "");
+    return base ? `${base}/${rel}` : rel;
+}
 
 export const useCursosIdModel = (classId: number) => {
     const [selectedObject, setSelectedObject] = useState<SelectedObject>(null)
     const [selectedObjectType, setSelectedObjectType] = useState<string | null>(null)
+    const [isResolvingMedia, setIsResolvingMedia] = useState(false)
     const [activeTab, setActiveTab] = useState<string>("conteudos")
     const [newNote, setNewNote] = useState<string>("")
     const [newNoteTitle, setNewNoteTitle] = useState<string>("")
@@ -27,6 +49,8 @@ export const useCursosIdModel = (classId: number) => {
     const [isUploading, setIsUploading] = useState(false)
 
     const { mutateAsync } = useMutateSendObject()
+
+    const { data: course, isLoading, isError } = useQueryGetClassById(classId)
 
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return "0 Bytes"
@@ -104,7 +128,7 @@ export const useCursosIdModel = (classId: number) => {
 
             try {
                 await mutateAsync({
-                    path: course?.path || "",
+                    path: course?.path?.replace(/\/+$/, "") ?? "",
                     object: file,
                 });
 
@@ -123,7 +147,6 @@ export const useCursosIdModel = (classId: number) => {
 
         setIsUploading(false);
         setFiles([]);
-        console.log("Upload completo para todos os arquivos.");
     };
 
     const clearAll = () => {
@@ -135,38 +158,56 @@ export const useCursosIdModel = (classId: number) => {
         setFiles([])
     }
 
-    const cookie = getCookie("UID");
-    const userId = cookie ? JSON.parse(atob(cookie as string)) : null;
-
-    const { data: course, isLoading, isError } = useQueryGetClassById(classId)
+    const professorId = parseProfessorIdFromCookie(getCookie("UID"))
 
     useEffect(() => {
-        console.log("teste effect")
-        console.log(Number(userId) === course?.codigo_professor)
-        console.log("Number(userId)", Number(userId))
-        console.log("course?.codigo_professor", course?.codigo_professor)
-        setIsLoggedUserTeacher(Number(userId) === course?.codigo_professor)
-    }, [course, userId])
+        setIsLoggedUserTeacher(
+            professorId != null && professorId === course?.codigo_professor,
+        )
+    }, [course?.codigo_professor, professorId])
 
     const { data: objects, isLoading: isLoadingObjects } = useQueryGetAllObjects(
-        "leapcert",
         course?.path,
-        !!course?.path
+        !!course?.path,
     )
 
-    const { isLoading: isLoadingObjectData } = useQueryGetObject(
-        "leapcert",
-        `${course?.path}${selectedObject ? `/${selectedObject.name}` : ""}`,
-        !!selectedObject
+    const handleClick = useCallback(
+        async (obj: ObjectType) => {
+            if (!course?.path) {
+                return;
+            }
+            setIsResolvingMedia(true);
+            try {
+                const objectKey = buildObjectStorageKey(course.path, obj.objectName);
+                const res = await api.get("minio/objects/getObject", {
+                    params: { objectName: objectKey },
+                });
+                if (!res.data?.flag) {
+                    toast.warning("Não foi possível abrir o arquivo", {
+                        description: res.data?.message ?? "Tente novamente.",
+                        duration: 5000,
+                        closeButton: true,
+                    });
+                    return;
+                }
+                const url = res.data.data as string;
+                setSelectedObject({
+                    name: obj.objectName,
+                    mimeType: obj.contentType,
+                    url,
+                });
+                setSelectedObjectType(obj.contentType);
+            } catch {
+                toast.error("Erro ao obter link do arquivo", {
+                    duration: 5000,
+                    closeButton: true,
+                });
+            } finally {
+                setIsResolvingMedia(false);
+            }
+        },
+        [course?.path],
     )
-
-    const handleClick = (obj: ObjectType) => {
-        setSelectedObject({
-            name: obj.objectName,
-            mimeType: obj.contentType,
-            url: `${uri_proxy}${course?.path}/${obj.objectName}`,
-        })
-    }
 
     const handleAddNote = () => {
         if (newNoteTitle.trim() && newNote.trim()) {
@@ -225,7 +266,7 @@ export const useCursosIdModel = (classId: number) => {
         isError,
         objects,
         isLoadingObjects,
-        isLoadingObjectData,
+        isLoadingObjectData: isResolvingMedia,
         handleClick,
         handleAddNote,
         handleSendMessage,

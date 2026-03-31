@@ -21,7 +21,8 @@ async function getById(id: number): Promise<IClass | null> {
 
 export default function useQueryGetClassById(id: number) {
     return useQuery({
-        queryKey: ["allClasses"],
-        queryFn: () => getById(id)
-    })
+        queryKey: ["class", id],
+        queryFn: () => getById(id),
+        enabled: Number.isFinite(id) && id > 0,
+    });
 }

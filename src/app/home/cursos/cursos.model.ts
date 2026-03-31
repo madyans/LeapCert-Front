@@ -9,7 +9,7 @@ export const useCursoModel = () => {
     const filteredCursos = cursosArray.filter(
         (curso) =>
             curso.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            curso.genero.toLowerCase().includes(searchTerm.toLowerCase()),
+            (curso.genero ?? "").toLowerCase().includes(searchTerm.toLowerCase()),
     )
 
     const getRatingColor = (rating: string) => {

@@ -1,30 +1,30 @@
+const version = '1.2.1';
 
-const version = "1.2.1";
+const devApiUrl = 'http://localhost:5036/api/';
+const prodApiUrlDefault = 'http://98.90.231.160:8081/api/';
 
 const development = {
   env: {
-    API_URL: "http://localhost:5036/api/",
-    version: version + "[dev]"
-  }
-}
+    API_URL: process.env.NEXT_PUBLIC_API_URL ?? devApiUrl,
+    version: version + '[dev]',
+  },
+};
 
 const production = {
   env: {
-    API_URL: "https://api.leapcert.com.br/api/",
-    version: version
-  }
-}
+    API_URL: process.env.NEXT_PUBLIC_API_URL ?? prodApiUrlDefault,
+    version,
+  },
+};
 
 function returnConfig() {
-  if (process.env.NODE_ENV == "development") {
-    console.log("development")
+  if (process.env.NODE_ENV === 'development') {
     return development;
-
-  } else if (process.env.NODE_ENV == "production") {
-    console.log("production")
-    return production;
-
   }
+  if (process.env.NODE_ENV === 'production') {
+    return production;
+  }
+  return development;
 }
 
 const nextConfig = returnConfig();

@@ -95,7 +95,7 @@ export const CursosView = (props: CursosViewType) => {
                                     >
                                         <div className="relative overflow-hidden">
                                             <Image
-                                                src={`/${CLASS_GENDER[curso.codigo_genero]}`}
+                                                src={`/${CLASS_GENDER[(curso.codigo_genero ?? 1) as keyof typeof CLASS_GENDER] ?? "programacao.png"}`}
                                                 alt="Imagem de fundo da categoria"
                                                 width={320}
                                                 height={180}

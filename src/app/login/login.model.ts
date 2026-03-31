@@ -86,7 +86,10 @@ export const useLoginModel = () => {
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        mutateAsync({ usuario: values.usuario, senha: values.senha })
+        void mutateAsync({
+            usuario: values.usuario,
+            senha: values.senha,
+        }).catch(() => {});
     }
 
     return {

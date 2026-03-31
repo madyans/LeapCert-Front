@@ -155,10 +155,12 @@ export const ContentView = (props: CourseClientViewProps) => {
                     <Card className="border rounded-md overflow-hidden">
                         <div className="bg-zinc-100 p-3 border-b flex items-center justify-between">
                             <div className="font-medium flex items-center gap-2">
-                                {getFileIcon(selectedObjectType || "")}
+                                {getFileIcon(selectedObjectType || selectedObject.mimeType || "")}
                                 <span>{selectedObject.name}</span>
                             </div>
-                            {selectedObjectType && <Badge variant="outline">{selectedObjectType}</Badge>}
+                            {(selectedObjectType || selectedObject.mimeType) ? (
+                                <Badge variant="outline">{selectedObjectType || selectedObject.mimeType}</Badge>
+                            ) : null}
                         </div>
                         <CardContent className="p-4">{renderContent()}</CardContent>
                     </Card>

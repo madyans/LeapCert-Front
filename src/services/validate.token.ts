@@ -1,30 +1,29 @@
-// ============================================================
-// MOCK de validação de token — remova este bloco e descomente
-// a implementação real quando o backend estiver disponível.
-// ============================================================
-const MOCK_VALID_TOKEN = "mock-token-leapcert";
+interface ValidateTokenApiBody {
+    flag?: boolean;
+}
 
-export default async function ValidateToken({ token }: { token?: { value: string } }) {
-    // --- MOCK ---
-    if (token?.value === MOCK_VALID_TOKEN) {
-        return true;
+export default async function ValidateToken({
+    token,
+}: {
+    token?: { value: string };
+}) {
+    if (!token?.value) {
+        return false;
     }
-    return false;
-
-    // --- REAL (descomentar quando o backend estiver pronto) ---
-    // import { cookies } from "next/headers";
-    // const cookie = cookies();
-    // const res = await fetch(`${process.env.API_URL}user/validateToken?token=${token?.value}`, {
-    //     method: "GET",
-    //     headers: { "Content-Type": "application/json" },
-    //     cache: "no-store",
-    // });
-    // const data = await res.json();
-    // if (!data.flag) {
-    //     (await cookie).delete("accessToken");
-    //     (await cookie).delete("UID");
-    //     (await cookie).delete("UP");
-    //     (await cookie).delete("UU");
-    // }
-    // return data.flag;
+    const baseUrl = process.env.API_URL;
+    if (!baseUrl) {
+        return false;
+    }
+    const url = `${baseUrl}user/validateToken?token=${encodeURIComponent(token.value)}`;
+    try {
+        const res = await fetch(url, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            cache: "no-store",
+        });
+        const data = (await res.json()) as ValidateTokenApiBody;
+        return data.flag === true;
+    } catch {
+        return false;
+    }
 }

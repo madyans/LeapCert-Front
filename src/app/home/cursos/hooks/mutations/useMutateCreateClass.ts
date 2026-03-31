@@ -1,6 +1,5 @@
 import api from "@/src/services/api";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface ClassType {
@@ -29,18 +28,17 @@ async function createClass(dto: ClassType) {
 }
 
 export default function useMutateCreateClass() {
-    const router = useRouter()
-
+    const queryClient = useQueryClient();
     return useMutation({
         mutationKey: ["createCalss"],
         mutationFn: (dto: ClassType) => createClass(dto),
         onSuccess: () => {
             toast.success("Curso criado com sucesso", {
-                description: "Curso cadastrado e pronto para adicionar conteúdo",
+                description: "Curso cadastrado no sistema",
                 duration: 5000,
-                closeButton: true
-            })
-            router.back()
-        }
-    })
+                closeButton: true,
+            });
+            queryClient.invalidateQueries({ queryKey: ["allClasses"], exact: false });
+        },
+    });
 }

@@ -5,7 +5,7 @@ import { Input } from "@/src/components/ui/input"
 import { Separator } from "@/src/components/ui/separator"
 import { Textarea } from "@/src/components/ui/textarea"
 import { IGender } from "@/src/interface/general/type-gender"
-import { BookOpen, FileText, Save, Tag, Type } from "lucide-react"
+import { BookOpen, FileText, Save, Tag, Type, Video } from "lucide-react"
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
@@ -18,9 +18,20 @@ interface iProps {
     isLoadingGenders: boolean
     router: AppRouterInstance
     isPending: boolean
+    videoFile: File | null
+    onVideoFileChange: (file: File | null) => void
 }
 
-export const FormCreate = ({ form, onSubmit, dataGenders, isLoadingGenders, router, isPending }: iProps) => {
+export const FormCreate = ({
+    form,
+    onSubmit,
+    dataGenders,
+    isLoadingGenders,
+    router,
+    isPending,
+    videoFile,
+    onVideoFileChange,
+}: iProps) => {
     return (
         <>
             <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50">
@@ -128,6 +139,33 @@ export const FormCreate = ({ form, onSubmit, dataGenders, isLoadingGenders, rout
 
                             <Separator className="my-8" />
 
+                            <div className="space-y-3">
+                                <div className="text-base font-semibold flex items-center gap-2">
+                                    <Video className="w-4 h-4 text-primary" />
+                                    Vídeo do curso
+                                </div>
+                                <Input
+                                    type="file"
+                                    accept="video/*,.mp4,.webm,.mov,.mkv"
+                                    disabled={isPending}
+                                    className="h-12 cursor-pointer text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary"
+                                    onChange={(e) => {
+                                        const f = e.target.files?.[0] ?? null
+                                        onVideoFileChange(f)
+                                    }}
+                                />
+                                <p className="text-sm text-muted-foreground">
+                                    Opcional: o arquivo é enviado para o armazenamento na pasta do curso após a criação.
+                                    {videoFile ? (
+                                        <span className="block mt-1 font-medium text-foreground">
+                                            Selecionado: {videoFile.name}
+                                        </span>
+                                    ) : null}
+                                </p>
+                            </div>
+
+                            <Separator className="my-8" />
+
                             <div className="flex flex-col sm:flex-row gap-4 pt-4">
                                 <Button
                                     type="button"
@@ -143,7 +181,7 @@ export const FormCreate = ({ form, onSubmit, dataGenders, isLoadingGenders, rout
                                     {isPending ? (
                                         <>
                                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                            Criando Curso...
+                                            {videoFile ? "Salvando e enviando vídeo..." : "Criando curso..."}
                                         </>
                                     ) : (
                                         <>

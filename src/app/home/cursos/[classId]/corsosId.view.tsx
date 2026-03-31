@@ -10,8 +10,6 @@ export type CourseClientViewProps = ReturnType<typeof useCursosIdModel>
 
 export default function CourseClientView(props: CourseClientViewProps) {
     const { isError, isLoading, course, control } = props
-    console.log("teste", control)
-
     {
         FunctionsComponents({
             isLoading,

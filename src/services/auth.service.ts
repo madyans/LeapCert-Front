@@ -1,22 +1,19 @@
-// ============================================================
-// MOCK de autenticação — remova este bloco e descomente o
-// trecho abaixo quando o backend estiver disponível.
-// ============================================================
-const MOCK_USER = {
-    usuario: "admin",
-    senha: "123456",
-};
+import api from "./api";
 
-const MOCK_RESPONSE = {
-    flag: true,
-    data: {
-        codigo: 1,
-        nome: "Administrador",
-        perfil: 1,
-        usuario: "admin",
-    },
-    accessToken: "mock-token-leapcert",
-};
+interface BackendLoginSession {
+    codigo: string;
+    usuario: string;
+    nome: string;
+    perfil: number;
+    timeStamp: string;
+    token: string;
+}
+
+interface BackendLoginBody {
+    flag: boolean;
+    message?: string;
+    data?: BackendLoginSession;
+}
 
 export async function LoginService({
     usuario,
@@ -25,35 +22,78 @@ export async function LoginService({
     usuario: string;
     senha: string;
 }) {
-    // --- MOCK ---
-    await new Promise((res) => setTimeout(res, 400)); // simula latência
-
-    if (usuario === MOCK_USER.usuario && senha === MOCK_USER.senha) {
-        // Seta o cookie accessToken manualmente para o middleware reconhecer
-        document.cookie = `accessToken=mock-token-leapcert; path=/; max-age=${60 * 60}; SameSite=Strict`;
-
+    try {
+        const response = await api.post<BackendLoginBody>(
+            "user/authenticate",
+            { usuario, senha },
+            {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            },
+        );
+        const body = response.data;
+        if (!body.flag || !body.data) {
+            return {
+                data: {
+                    flag: false as const,
+                    message: body.message,
+                    data: {
+                        codigo: 0,
+                        nome: "",
+                        perfil: 0,
+                        usuario: "",
+                    },
+                    accessToken: "",
+                },
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers,
+                config: response.config,
+            };
+        }
+        const d = body.data;
+        const maxAgeSeconds = 60 * 60 * 5;
+        if (typeof document !== "undefined" && d.token) {
+            document.cookie = `accessToken=${encodeURIComponent(d.token)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax`;
+        }
         return {
-            data: MOCK_RESPONSE,
-            status: 200,
-            statusText: "OK",
-            headers: {},
-            config: {} as never,
+            data: {
+                flag: true as const,
+                data: {
+                    codigo: Number(d.codigo),
+                    nome: d.nome,
+                    perfil: d.perfil,
+                    usuario: d.usuario,
+                },
+                accessToken: d.token,
+            },
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            config: response.config,
         };
+    } catch (err: unknown) {
+        const ax = err as { data?: BackendLoginBody; status?: number };
+        const body = ax?.data;
+        if (body && body.flag === false) {
+            return {
+                data: {
+                    flag: false as const,
+                    message: body.message,
+                    data: {
+                        codigo: 0,
+                        nome: "",
+                        perfil: 0,
+                        usuario: "",
+                    },
+                    accessToken: "",
+                },
+                status: ax.status ?? 0,
+                statusText: "Error",
+                headers: {},
+                config: {} as never,
+            };
+        }
+        return null;
     }
-
-    return null;
-
-    // --- REAL (descomentar quando o backend estiver pronto) ---
-    // import api from "./api";
-    // const data = { usuario: usuario, Senha: senha };
-    // try {
-    //     const response = await api.post(`/user/authenticate`, data, {
-    //         headers: { "Content-Type": "application/json" },
-    //         withCredentials: true,
-    //     });
-    //     return response;
-    // } catch (err) {
-    //     console.log(err);
-    //     return null;
-    // }
 }

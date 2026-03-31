@@ -18,7 +18,7 @@ interface iProps {
     setForumSearch: (e: string) => void
     isLoadingObjects: boolean
     objects: ObjectType[] | undefined
-    handleClick: (e: ObjectType) => void
+    handleClick: (e: ObjectType) => void | Promise<void>
     selectedObject: SelectedObject
     notes: typeof notesData
     setNewNoteTitle: (e: string) => void

@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ObjectType } from "../interface/ObjectType";
 
-async function getObjects(bucketName: string, prefix?: string) {
+async function getObjects(prefix?: string | null) {
     try {
+        const normalized = prefix?.trim();
         const response = await api.get("minio/objects/getAllObjects", {
             params: {
-                bucketName,
-                prefix,
+                prefix: normalized && normalized.length > 0 ? (normalized.endsWith("/") ? normalized : `${normalized}/`) : undefined,
+                recursive: true,
+                versions: false,
             },
         });
 
@@ -34,11 +36,11 @@ async function getObjects(bucketName: string, prefix?: string) {
     }
 }
 
-export default function useQueryGetAllObjects(bucketName: string, prefix?: string, enabled = true) {
+export default function useQueryGetAllObjects(prefix?: string | null, enabled = true) {
     return useQuery({
-        queryKey: ["allObjects", bucketName, prefix],
-        queryFn: () => getObjects(bucketName, prefix),
-        enabled,
+        queryKey: ["allObjects", prefix],
+        queryFn: () => getObjects(prefix),
+        enabled: enabled && !!prefix?.trim(),
     });
 }
 

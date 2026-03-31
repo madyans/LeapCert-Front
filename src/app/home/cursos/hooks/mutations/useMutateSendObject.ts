@@ -10,13 +10,9 @@ interface iProps {
 async function sendObject({ object, path }: iProps) {
     const formData = new FormData();
     formData.append("File", object);
-    formData.append("Path", path);
+    formData.append("path", path);
 
-    const response = await api.post("minio/sendObject", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+    const response = await api.post("minio/sendObject", formData);
 
     if (!response.data.flag) {
         toast.error("Erro ao enviar objeto", {
@@ -42,7 +38,8 @@ export default function useMutateSendObject() {
                 duration: 5000,
                 closeButton: true,
             });
-            queryClient.invalidateQueries({ queryKey: ["allObjects"], exact: false })
+            queryClient.invalidateQueries({ queryKey: ["allObjects"], exact: false });
+            queryClient.invalidateQueries({ queryKey: ["allClasses"], exact: false });
         },
     });
 }
