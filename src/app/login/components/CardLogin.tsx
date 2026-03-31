@@ -2,6 +2,7 @@ import { Button } from "@/src/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
 import { Input } from "@/src/components/ui/input"
 import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "lucide-react"
+import Link from "next/link"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 import { formSchema } from "../login.schema"
@@ -91,10 +92,21 @@ export const CardLogin = ({ form, onSubmit, setShowPassword, showPassword, isPen
                 </form>
             </Form>
 
-            <div className="text-center">
-                <a href="#" className="text-green-200 hover:text-white text-sm transition-colors">
-                    Esqueceu sua senha?
-                </a>
+            <div className="flex flex-col gap-5 pt-2">
+                <div className="text-center">
+                    <a href="#" className="text-green-200 hover:text-white text-sm transition-colors">
+                        Esqueceu sua senha?
+                    </a>
+                </div>
+
+                <Link href="/cadastro" className="w-full block" tabIndex={-1}>
+                    <Button
+                        type="button"
+                        className="w-full bg-white/5 border border-green-400/40 text-green-100 hover:bg-white/10 hover:text-white hover:border-green-300 font-medium py-2 rounded-lg transition-all duration-200 shadow-sm"
+                    >
+                        Não tem cadastro? Faça ele aqui.
+                    </Button>
+                </Link>
             </div>
         </div>
     )
