@@ -7,9 +7,10 @@ const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/login";
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     const publicRoute = routes.find(route => route.path === path);
+    const isPublicCourseLanding = /^\/home\/cursos\/\d+$/.test(path);
     const authToken = request.cookies.get("accessToken")
 
-    if (!authToken && !publicRoute?.isPublic) {
+    if (!authToken && !publicRoute?.isPublic && !isPublicCourseLanding) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
 

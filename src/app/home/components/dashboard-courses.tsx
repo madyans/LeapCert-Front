@@ -16,9 +16,7 @@ export function DashboardCourses() {
     const { loggedUser } = useUser()
     const cursosArray = Array.isArray(cursos) ? cursos : []
 
-    // For the dashboard, we'll just show the first few courses to simulate "enrolled courses" 
-    // or recommended courses if the user has none (since we're mocking)
-    const displayCourses = cursosArray.slice(0, 4)
+    const displayCourses = cursosArray
 
     const getRatingBadgeColor = (rating: string) => {
         const numRating = Number.parseFloat(rating)
@@ -49,7 +47,7 @@ export function DashboardCourses() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Cursos</p>
-                            <p className="text-xl font-bold text-black dark:text-white">{displayCourses.length}</p>
+                            <p className="text-xl font-bold text-black dark:text-white">{cursosArray.length}</p>
                         </div>
                     </div>
                     <div className="bg-emerald-50 dark:bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/10 flex items-center gap-3">
@@ -57,8 +55,8 @@ export function DashboardCourses() {
                             <Clock className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Horas</p>
-                            <p className="text-xl font-bold text-black dark:text-white">12h</p>
+                            <p className="text-sm font-medium text-muted-foreground">Disponiveis</p>
+                            <p className="text-xl font-bold text-black dark:text-white">{cursosArray.length}</p>
                         </div>
                     </div>
                 </div>
@@ -69,7 +67,7 @@ export function DashboardCourses() {
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
                         <GraduationCap className="w-5 h-5 text-primary" />
-                        Meus Cursos em Andamento
+                        Cursos Disponiveis
                     </h3>
                     <button 
                         onClick={() => router.push('/home/cursos')}
@@ -119,17 +117,9 @@ export function DashboardCourses() {
                                         {curso.nome}
                                     </CardTitle>
                                     
-                                    {/* Mock progress bar */}
-                                    <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 mb-1 mt-2">
-                                        <div 
-                                            className="bg-primary h-1.5 rounded-full" 
-                                            style={{ width: `${Math.floor(Math.random() * 60) + 10}%` }}
-                                        ></div>
-                                    </div>
-                                    <div className="flex justify-between items-center text-xs text-muted-foreground w-full">
-                                        <span>Progresso</span>
-                                        <span>Continuar →</span>
-                                    </div>
+                                    <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                                        {curso.descricao || "Curso disponivel para acesso."}
+                                    </p>
                                 </CardHeader>
                             </Card>
                         ))}

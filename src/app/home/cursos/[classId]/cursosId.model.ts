@@ -32,7 +32,7 @@ function buildObjectStorageKey(coursePath: string | null | undefined, objectRela
     return base ? `${base}/${rel}` : rel;
 }
 
-export const useCursosIdModel = (classId: number) => {
+export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
     const [selectedObject, setSelectedObject] = useState<SelectedObject>(null)
     const [selectedObjectType, setSelectedObjectType] = useState<string | null>(null)
     const [isResolvingMedia, setIsResolvingMedia] = useState(false)
@@ -168,11 +168,15 @@ export const useCursosIdModel = (classId: number) => {
 
     const { data: objects, isLoading: isLoadingObjects } = useQueryGetAllObjects(
         course?.path,
-        !!course?.path,
+        isAuthenticated && !!course?.path,
     )
 
     const handleClick = useCallback(
         async (obj: ObjectType) => {
+            if (!isAuthenticated) {
+                toast.warning("Faça login para acessar o conteúdo completo do curso.");
+                return;
+            }
             if (!course?.path) {
                 return;
             }
@@ -206,7 +210,7 @@ export const useCursosIdModel = (classId: number) => {
                 setIsResolvingMedia(false);
             }
         },
-        [course?.path],
+        [course?.path, isAuthenticated],
     )
 
     const handleAddNote = () => {
@@ -286,5 +290,7 @@ export const useCursosIdModel = (classId: number) => {
         isDragOver,
         files,
         isUploading,
+        classId,
+        isAuthenticated,
     }
 }

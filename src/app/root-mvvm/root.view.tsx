@@ -6,7 +6,7 @@ import { useRootModel } from "./root.model";
 type RootViewProps = ReturnType<typeof useRootModel>
 
 export const RootPage = (props: RootViewProps) => {
-    const { filteredCourses, searchTerm, selectedCategory, setSearchTerm, setSelectedCategory } = props
+    const { filteredCourses, categories, searchTerm, selectedCategory, setSearchTerm, setSelectedCategory, isLoading } = props
 
     return (
         <div className="w-full min-h-screen flex flex-col bg-green-50">
@@ -14,10 +14,12 @@ export const RootPage = (props: RootViewProps) => {
 
             <Main
                 filteredCourses={filteredCourses}
+                categories={categories}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
+                isLoading={isLoading}
             />
 
             <Footer />

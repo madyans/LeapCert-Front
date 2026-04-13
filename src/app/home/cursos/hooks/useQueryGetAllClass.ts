@@ -4,19 +4,33 @@ import { toast } from "sonner";
 import IClass from "../interface/IClass";
 
 async function getClasses(): Promise<IClass[]> {
-    const response = await api.get("class");
+    try {
+        const response = await api.get("class");
 
-    if (!response.data.flag) {
-        toast.warning("Erro ao buscar cursos", {
-            description: response.data.message,
-            duration: 5000,
-            closeButton: true,
-        });
-        return [];
+        if (!response.data.flag) {
+            toast.warning("Erro ao buscar cursos", {
+                description: response.data.message,
+                duration: 5000,
+                closeButton: true,
+            });
+            return [];
+        }
+
+        const list = response.data.data as IClass[];
+        return Array.isArray(list) ? list : [];
+    } catch {
+        try {
+            // Some backends expose public catalog under a dedicated endpoint.
+            const publicResponse = await api.get("class/public");
+            if (!publicResponse.data.flag) {
+                return [];
+            }
+            const list = publicResponse.data.data as IClass[];
+            return Array.isArray(list) ? list : [];
+        } catch {
+            return [];
+        }
     }
-
-    const list = response.data.data as IClass[];
-    return Array.isArray(list) ? list : [];
 }
 
 export default function useQueryGetAllClasses() {

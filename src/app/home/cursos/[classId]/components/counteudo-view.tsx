@@ -3,6 +3,7 @@ import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { BookMarked, Circle, Download, FileIcon, FileQuestion, FileText, Film, ImageIcon, Loader2, PenLine, PlayCircle, Star } from "lucide-react"
 import image from "../../../../../../public/Frois.jpeg"
+import Link from "next/link"
 import { ContentType } from "../../constants/types"
 import { CourseClientViewProps } from "../corsosId.view"
 import { CenterTab } from "./center-tab"
@@ -14,7 +15,7 @@ import { AllTabs } from "./rigthTabs/Tabs"
 import { VideoComponent } from "./Video"
 
 export const ContentView = (props: CourseClientViewProps) => {
-    const { activeTab, calculateProgress, control, course, forumSearch, handleAddNote, handleClick, handleSendMessage, isLoadingObjects, isLoggedUserTeacher, messageToInstructor, newNote, newNoteTitle, notes, objects, selectedObject, selectedObjectType, setActiveTab, setControl, getContentType, isLoadingObjectData, setForumSearch, setMessageToInstructor, setNewNote, setNewNoteTitle } = props
+    const { activeTab, calculateProgress, control, course, forumSearch, handleAddNote, handleClick, handleSendMessage, isLoadingObjects, isLoggedUserTeacher, messageToInstructor, newNote, newNoteTitle, notes, objects, selectedObject, selectedObjectType, setActiveTab, setControl, getContentType, isLoadingObjectData, setForumSearch, setMessageToInstructor, setNewNote, setNewNoteTitle, isAuthenticated, classId } = props
 
     const getLearningPathIcon = (type: string) => {
         switch (type) {
@@ -115,42 +116,57 @@ export const ContentView = (props: CourseClientViewProps) => {
                 </div>
 
                 <div className="col-span-1">
-                    <div>{isLoggedUserTeacher ?
+                    <div>{isAuthenticated && isLoggedUserTeacher ?
                         <>
                             <Button className="w-full mb-4" onClick={() => setControl(!control)}>Criar conteúdo</Button>
                         </>
                         : null}
                     </div>
 
-                    <ButtonTabs
-                        activeTab={activeTab}
-                        setActiveTab={setActiveTab}
-                    />
+                    {isAuthenticated ? (
+                        <>
+                            <ButtonTabs
+                                activeTab={activeTab}
+                                setActiveTab={setActiveTab}
+                            />
 
-                    <AllTabs
-                        activeTab={activeTab}
-                        forumSearch={forumSearch}
-                        getFileIcon={getFileIcon}
-                        getLearningPathIcon={getLearningPathIcon}
-                        handleAddNote={handleAddNote}
-                        handleClick={handleClick}
-                        handleSendMessage={handleSendMessage}
-                        isLoadingObjects={isLoadingObjects}
-                        messageToInstructor={messageToInstructor}
-                        newNote={newNote}
-                        newNoteTitle={newNoteTitle}
-                        notes={notes}
-                        objects={objects}
-                        selectedObject={selectedObject}
-                        setForumSearch={setForumSearch}
-                        setMessageToInstructor={setMessageToInstructor}
-                        setNewNote={setNewNote}
-                        setNewNoteTitle={setNewNoteTitle}
-                    />
+                            <AllTabs
+                                activeTab={activeTab}
+                                forumSearch={forumSearch}
+                                getFileIcon={getFileIcon}
+                                getLearningPathIcon={getLearningPathIcon}
+                                handleAddNote={handleAddNote}
+                                handleClick={handleClick}
+                                handleSendMessage={handleSendMessage}
+                                isLoadingObjects={isLoadingObjects}
+                                messageToInstructor={messageToInstructor}
+                                newNote={newNote}
+                                newNoteTitle={newNoteTitle}
+                                notes={notes}
+                                objects={objects}
+                                selectedObject={selectedObject}
+                                setForumSearch={setForumSearch}
+                                setMessageToInstructor={setMessageToInstructor}
+                                setNewNote={setNewNote}
+                                setNewNoteTitle={setNewNoteTitle}
+                            />
+                        </>
+                    ) : (
+                        <Card className="mt-2">
+                            <CardContent className="pt-6 space-y-3">
+                                <p className="text-sm text-zinc-700">
+                                    O conteúdo completo deste curso esta disponivel apenas para usuarios autenticados.
+                                </p>
+                                <Button asChild className="w-full">
+                                    <Link href={`/login?redirect=/home/cursos/${classId}`}>Entrar para acessar</Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
 
-            {selectedObject && (
+            {isAuthenticated && selectedObject && (
                 <div className="max-w-[1200px] mx-auto p-4 mt-4">
                     <Card className="border rounded-md overflow-hidden">
                         <div className="bg-zinc-100 p-3 border-b flex items-center justify-between">

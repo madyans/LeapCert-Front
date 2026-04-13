@@ -3,21 +3,22 @@ import { ChevronLeft, ChevronRight, ClockIcon, SearchIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
-import { categories, courses, CourseType } from "../constants"
+import { RootCourseType } from "../root.model"
 
 interface iProps {
     searchTerm: string
     setSearchTerm: (id: string) => void
     selectedCategory: string
     setSelectedCategory: (id: string) => void
-    filteredCourses: CourseType[],
-
+    filteredCourses: RootCourseType[],
+    categories: { id: string; name: string }[]
+    isLoading: boolean
 }
 
-export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredCourses }: iProps) => {
+export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredCourses, categories, isLoading }: iProps) => {
     const heroCourses = useMemo(
-        () => courses.filter((course) => course.featured),
-        []
+        () => filteredCourses.slice(0, 3),
+        [filteredCourses],
     )
 
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -133,7 +134,7 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                                     <div className="mt-2 sm:mt-3 flex items-center justify-between w-full gap-4">
                                         <div className="flex items-center gap-2 text-xs text-emerald-700/80">
                                             <ClockIcon className="h-4 w-4" />
-                                            <span>{centralCourse.duration}</span>
+                                            <span>Avaliacao: {Number.parseFloat(centralCourse.rating || "0").toFixed(1)}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <button
@@ -241,7 +242,11 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                         </div>
                     </div>
 
-                    {filteredCourses.length > 0 ? (
+                    {isLoading ? (
+                        <div className="text-center py-12">
+                            <p className="text-zinc-600">Carregando cursos...</p>
+                        </div>
+                    ) : filteredCourses.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredCourses.map((course) => (
                                 <div
@@ -250,13 +255,13 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                                 >
                                     <div className="relative h-40 bg-gradient-to-br from-emerald-50 to-emerald-100/80 overflow-hidden">
                                         <Image
-                                            src={course.image || "/placeholder.svg"}
+                                            src="/programacao.png"
                                             alt={course.title}
                                             fill
                                             className="object-contain p-3 group-hover:scale-105 transition-transform duration-200"
                                         />
                                         <div className="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                                            {course.level}
+                                            {course.category}
                                         </div>
                                     </div>
                                     <div className="p-4 flex-1 flex flex-col">
@@ -269,10 +274,10 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                                         <div className="flex justify-between items-center mt-auto pt-1">
                                             <span className="text-xs text-zinc-500 flex items-center">
                                                 <ClockIcon className="h-3 w-3 mr-1" />
-                                                {course.duration}
+                                                Avaliacao {Number.parseFloat(course.rating || "0").toFixed(1)}
                                             </span>
                                             <Link
-                                                href={`/cursos/${course.id}`}
+                                                href={`/home/cursos/${course.id}`}
                                                 className="bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 rounded-full text-xs sm:text-sm transition-colors duration-200 shadow-sm"
                                             >
                                                 Ver curso
@@ -298,7 +303,7 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
 }
 
 interface HeroCourseCardProps {
-    course: CourseType
+    course: RootCourseType
     size: "sm" | "lg"
     muted?: boolean
 }
@@ -313,13 +318,13 @@ const HeroCourseCard = ({ course, size, muted }: HeroCourseCardProps) => {
         >
             <div className={`relative ${isLarge ? "h-32 sm:h-36" : "h-24"} bg-emerald-50`}>
                 <Image
-                    src={course.image || "/placeholder.svg"}
+                    src="/programacao.png"
                     alt={course.title}
                     fill
                     className="object-contain p-3"
                 />
                 <div className="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-semibold px-2 py-1 rounded-full">
-                    {course.level}
+                    {course.category}
                 </div>
             </div>
             <div className={`flex-1 px-3 sm:px-4 ${isLarge ? "py-3.5" : "py-2.5"}`}>
