@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import ClientPage from "./cursosid.viewmodel";
 
 interface PageProps {
@@ -6,6 +7,8 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
     const { classId } = await params;
+    const cookieStore = await cookies();
+    const isAuthenticated = Boolean(cookieStore.get("accessToken")?.value);
 
-    return <ClientPage classId={Number(classId)} />;
+    return <ClientPage classId={Number(classId)} isAuthenticated={isAuthenticated} />;
 }
