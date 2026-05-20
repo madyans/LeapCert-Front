@@ -3,20 +3,46 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import IClass from "../interface/IClass";
 
-async function getById(id: number): Promise<IClass | null> {
-    const response = await api.get(`class/${id}`);
+export class CourseAccessError extends Error {
+    status: number;
 
-    if (!response.data.flag) {
-        toast.warning("Erro ao buscar cursos", {
-            description: response.data.message,
-            duration: 5000,
-            closeButton: true,
-        })
-        return null;
+    constructor(message: string, status: number) {
+        super(message);
+        this.name = "CourseAccessError";
+        this.status = status;
     }
+}
 
-    const modules: IClass = response.data.data
-    return modules
+async function getById(id: number): Promise<IClass | null> {
+    try {
+        const response = await api.get(`class/${id}`);
+
+        if (!response.data.flag) {
+            toast.warning("Erro ao buscar cursos", {
+                description: response.data.message,
+                duration: 5000,
+                closeButton: true,
+            })
+            return null;
+        }
+
+        const modules: IClass = response.data.data
+        return modules
+    } catch (error: unknown) {
+        const response = error as {
+            status?: number;
+            data?: { message?: string };
+        };
+
+        if (response?.status === 403) {
+            throw new CourseAccessError(
+                response.data?.message ?? "Você precisa ter pelo menos um curso criado para acessar este curso.",
+                403,
+            );
+        }
+
+        throw error;
+    }
 }
 
 export default function useQueryGetClassById(id: number) {

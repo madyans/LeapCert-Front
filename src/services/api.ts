@@ -1,16 +1,33 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import Cookies from 'js-cookie';
 
-const authToken = Cookies.get("accessToken");
 const baseURL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
 
 const api: AxiosInstance = axios.create({
     baseURL,
-    // Public endpoints (catalog) must work across browsers without
-    // requiring third-party cookie credentials.
-    withCredentials: false,
+    withCredentials: true,
     timeout: 90000,
-    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+});
+
+api.interceptors.request.use((config) => {
+    const authToken = Cookies.get("accessToken");
+    config.headers = config.headers ?? {};
+
+    if (authToken) {
+        if (typeof config.headers.set === "function") {
+            config.headers.set("Authorization", `Bearer ${authToken}`);
+        } else {
+            config.headers.Authorization = `Bearer ${authToken}`;
+        }
+    } else {
+        if (typeof config.headers.delete === "function") {
+            config.headers.delete("Authorization");
+        } else if (config.headers.Authorization) {
+            delete config.headers.Authorization;
+        }
+    }
+
+    return config;
 });
 
 api.interceptors.response.use(

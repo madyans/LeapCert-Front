@@ -17,6 +17,9 @@ export const CreateClassView = (props: CreateClassViewProps) => {
         onSubmit,
         videoFile,
         onVideoFileChange,
+        learningPathFiles,
+        onLearningPathFileChange,
+        onLearningPathRemove,
     } = props
 
     if (isLoadingGenders) return null;
@@ -33,6 +36,9 @@ export const CreateClassView = (props: CreateClassViewProps) => {
                     isLoadingGenders={isLoadingGenders}
                     isPending={isPending}
                     onSubmit={onSubmit}
+                    learningPathFiles={learningPathFiles}
+                    onLearningPathFileChange={onLearningPathFileChange}
+                    onLearningPathRemove={onLearningPathRemove}
                     onVideoFileChange={onVideoFileChange}
                     router={router}
                     videoFile={videoFile}

@@ -9,6 +9,47 @@ interface ClassType {
     created_at: string,
     nome: string,
     genero: number
+    secoes: {
+        titulo: string
+        conteudo: string
+        ordem: number
+    }[]
+    trilha: {
+        titulo: string
+        tipo: string
+        concluido_padrao: boolean
+        arquivo_nome?: string | null
+        arquivo_path?: string | null
+        arquivo_tipo?: string | null
+        ordem: number
+    }[]
+    forum_topicos: {
+        autor: string
+        titulo: string
+        resumo: string
+        ordem: number
+    }[]
+    avaliacoes_itens: {
+        titulo: string
+        tipo: string
+        quantidade_questoes: number | null
+        duracao: string | null
+        prazo: string | null
+        ordem: number
+    }[]
+    certificados: {
+        titulo: string
+        descricao: string
+        status: string
+        progresso_padrao: number
+        disponivel_padrao: boolean
+        ordem: number
+    }[]
+    contato_professor: {
+        nome_professor: string
+        subtitulo: string
+        mensagem_orientacao: string
+    }
 }
 
 

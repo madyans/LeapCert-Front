@@ -1,47 +1,46 @@
 import Image, { StaticImageData } from "next/image"
+import { BookOpen, Layers3 } from "lucide-react"
 
 interface iProps {
     image: StaticImageData
+    courseName: string
+    summary: string
+    sectionCount: number
 }
 
-export const LeaftTab = ({ image }: iProps) => {
+export const LeaftTab = ({ image, courseName, summary, sectionCount }: iProps) => {
     return (
-        <>
-            <div className="col-span-1">
+        <aside className="rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="overflow-hidden rounded-md border border-zinc-100 bg-zinc-50">
                 <Image
                     src={image}
                     alt="Course Instructor"
-                    className="w-full h-auto rounded-md mb-4"
+                    className="aspect-square h-auto w-full object-cover"
                 />
-                <div className="text-sm text-black">
-                    <div className="font-semibold">Nome: Eduardo Frois</div>
-                    <div className="mt-2">
-                        <div className="font-semibold text-green-600">Certificações:</div>
-                        <div className="text-xs text-zinc-600">
-                            Microsoft Certified: Azure Developer Associate, AWS Certified Developer – Associate
-                        </div>
-                    </div>
-                    <div className="mt-2">
-                        <div className="font-semibold text-green-600">Habilidades:</div>
-                        <div className="text-xs text-zinc-600">
-                            .NET 8, MinIO, Armazenamento em Nuvem, APIs REST, Docker, Entity Framework Core
-                        </div>
-                    </div>
-                    <div className="mt-2">
-                        <div className="font-semibold text-green-600">Experiência profissional:</div>
-                        <div className="text-xs text-zinc-600">
-                            Mais de 10 anos desenvolvendo soluções escaláveis com .NET, com foco em integrações com serviços em nuvem e armazenamento distribuído
-                        </div>
-                    </div>
-                    <div className="mt-2">
-                        <div className="font-semibold text-green-600">Cursos ministrados:</div>
-                        <div className="text-xs text-zinc-600">
-                            APIs REST com .NET, Armazenamento com MinIO e S3, Arquitetura de Microsserviços com .NET 8, Integração de Serviços em Nuvem
-                        </div>
-                    </div>
-                </div>
             </div>
 
-        </>
+            <div className="mt-4 space-y-4 text-sm text-zinc-800">
+                <div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Curso</div>
+                    <div className="mt-1 text-base font-semibold leading-snug text-zinc-950">{courseName}</div>
+                </div>
+
+                <div className="rounded-md bg-green-50 p-3 text-green-950">
+                    <div className="flex items-center gap-2 font-semibold text-green-700">
+                        <BookOpen className="h-4 w-4" />
+                        Resumo
+                    </div>
+                    <p className="mt-2 text-sm leading-5 text-zinc-700">{summary}</p>
+                </div>
+
+                <div className="flex items-center justify-between rounded-md border border-zinc-200 px-3 py-2">
+                    <div className="flex items-center gap-2 font-medium text-zinc-700">
+                        <Layers3 className="h-4 w-4 text-green-600" />
+                        Seções
+                    </div>
+                    <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-sm font-semibold text-zinc-900">{sectionCount}</span>
+                </div>
+            </div>
+        </aside>
     )
 }

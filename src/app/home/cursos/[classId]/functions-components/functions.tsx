@@ -77,7 +77,7 @@ export const FunctionsComponents = ({ course, isError, isLoading }: iProps) => {
                                 <p className="font-medium">Erro ao carregar o curso.</p>
                             </div>
                             <p className="text-sm text-red-400 mt-2">
-                                Por favor, tente novamente mais tarde ou entre em contato com o suporte.
+                                É necessário criar um curso para acessar essa página. Por favor, volte para a página inicial e crie um curso para visualizar seus detalhes aqui.
                             </p>
                         </CardContent>
                     </Card>

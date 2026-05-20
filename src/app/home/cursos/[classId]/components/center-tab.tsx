@@ -1,34 +1,57 @@
 import { Progress } from "@/src/components/ui/progress"
+import { ICourseSection } from "../../interface/IClass"
+import { CheckCircle2 } from "lucide-react"
 
 interface iProps {
     calculateProgress: () => number
+    description: string
+    sections: ICourseSection[]
 }
 
-export const CenterTab = ({ calculateProgress }: iProps) => {
+export const CenterTab = ({ calculateProgress, description, sections }: iProps) => {
+    const hasSections = sections.length > 0
+
     return (
-        <>
-            <div className="col-span-3 bg-white rounded-md p-6 border h-full">
-                <div className="prose max-w-none text-black">
-                    <p>
-                        Neste curso, vamos explorar a fundo os fundamentos do <strong>MinIO</strong> e como integrá-lo de forma eficiente em aplicações modernas desenvolvidas com <strong>.NET 8</strong>. Cada aula será acompanhada de vídeos de alta qualidade, com passo a passo detalhado para que você possa acompanhar e praticar do conforto da sua casa.
-                    </p>
-                    <p>
-                        Você vai aprender a configurar o MinIO localmente e na nuvem, realizar operações com buckets e objetos, aplicar políticas de acesso, versionamento, segurança com credenciais, e integração completa com APIs desenvolvidas em .NET 8. Também vamos abordar conceitos essenciais como boas práticas de upload/download de arquivos, uso de streams, e como lidar com arquivos grandes em aplicações web e backend.
-                    </p>
-                    <p>
-                        E por fim, como seu instrutor, quero dizer uma coisa: programar é um ato de construção, de curiosidade e de evolução contínua. Cada endpoint que você cria, cada arquivo que armazena, conta uma história de aprendizado. Não tenha medo de errar — é codando que a gente aprende, e é com dedicação que a gente se destaca. Vamos juntos transformar seu conhecimento em uma ferramenta poderosa para o futuro!
-                    </p>
-                    <p className="text-green-600 font-italic">Nos vemos na primeira aula! 💻🚀</p>
+        <section className="rounded-md border border-zinc-200 bg-white p-6 shadow-sm">
+            <div className="space-y-6 text-zinc-950">
+                <div className="rounded-md border border-green-100 bg-green-50/70 p-4">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-green-700">Descrição do curso</div>
+                    <p className="mt-2 text-base leading-7 text-zinc-800">{description}</p>
                 </div>
 
-                <div className="mt-6 p-4 bg-green-50 rounded-md border border-green-100">
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-medium">Seu progresso no curso</h3>
-                        <span className="text-sm text-green-700">{calculateProgress()}% concluído</span>
+                {hasSections ? (
+                    <div className="space-y-4">
+                        {sections.map((section, index) => (
+                            <section key={section.codigo || section.ordem} className="group rounded-md border border-zinc-200 bg-white p-4 transition-colors hover:border-green-200 hover:bg-green-50/30">
+                                <div className="flex items-start gap-3">
+                                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-green-100 text-sm font-semibold text-green-700">
+                                        {index + 1}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <h3 className="text-base font-semibold text-zinc-950">{section.titulo}</h3>
+                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700">{section.conteudo}</p>
+                                    </div>
+                                </div>
+                            </section>
+                        ))}
                     </div>
-                    <Progress value={calculateProgress()} className="h-2" />
-                </div>
+                ) : (
+                    <div className="rounded-md border border-dashed bg-zinc-50 p-4">
+                        <p className="text-sm text-zinc-600">Nenhuma seção detalhada foi cadastrada para este curso.</p>
+                    </div>
+                )}
             </div>
-        </>
+
+            <div className="mt-6 rounded-md border border-zinc-200 bg-zinc-50 p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 font-medium text-zinc-900">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        Seu progresso no curso
+                    </div>
+                    <span className="text-sm font-semibold text-green-700">{calculateProgress()}% concluído</span>
+                </div>
+                <Progress value={calculateProgress()} className="h-2" />
+            </div>
+        </section>
     )
 }

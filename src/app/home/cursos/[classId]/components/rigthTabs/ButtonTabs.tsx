@@ -1,4 +1,5 @@
 import { ActiveTab } from "../../cursosId.interface"
+import { Award, BookOpenCheck, ClipboardList, FileText, MessageCircle, NotebookPen, UserRound } from "lucide-react"
 
 interface iProps {
     activeTab: string
@@ -6,52 +7,38 @@ interface iProps {
 }
 
 export const ButtonTabs = ({ activeTab, setActiveTab }: iProps) => {
+    const tabs = [
+        { id: ActiveTab.Trilha, label: "Trilha de aprendizado", icon: BookOpenCheck },
+        { id: ActiveTab.Forum, label: "Forum de discussão", icon: MessageCircle },
+        { id: ActiveTab.Conteudos, label: "Conteúdos", icon: FileText },
+        { id: ActiveTab.Provas, label: "Provas e atividades", icon: ClipboardList },
+        { id: ActiveTab.Anotacoes, label: "Anotações", icon: NotebookPen },
+        { id: ActiveTab.Certificados, label: "Certificados", icon: Award },
+        { id: ActiveTab.Professor, label: "Fale com o professor", icon: UserRound },
+    ]
+
     return (
-        <>
-            <div className="flex flex-col gap-1 text-black">
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Trilha ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Trilha)}
-                >
-                    Trilha de aprendizado
-                </button>
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Forum ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Forum)}
-                >
-                    Forum de discussão
-                </button>
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Conteudos ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Conteudos)}
-                >
-                    Conteúdos
-                </button>
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Provas ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Provas)}
-                >
-                    Provas e atividades
-                </button>
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Anotacoes ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Anotacoes)}
-                >
-                    Anotações
-                </button>
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Certificados ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Certificados)}
-                >
-                    Certificados
-                </button>
-                <button
-                    className={`w-full bg-zinc-100 text-left p-3 border-l-4 ${activeTab === ActiveTab.Professor ? "border-green-600 bg-green-50 text-green-700" : "border-transparent hover:bg-zinc-100"}`}
-                    onClick={() => setActiveTab(ActiveTab.Professor)}
-                >
-                    Fale com o professor
-                </button>
+        <nav className="rounded-md border border-zinc-200 bg-white p-2 shadow-sm">
+            <div className="flex flex-col gap-1 text-zinc-900">
+                {tabs.map((tab) => {
+                    const Icon = tab.icon
+                    const selected = activeTab === tab.id
+
+                    return (
+                        <button
+                            key={tab.id}
+                            className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium transition-colors ${selected
+                                ? "bg-green-50 text-green-700 ring-1 ring-green-100"
+                                : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950"
+                                }`}
+                            onClick={() => setActiveTab(tab.id)}
+                        >
+                            <Icon className={`h-4 w-4 ${selected ? "text-green-600" : "text-zinc-400"}`} />
+                            <span>{tab.label}</span>
+                        </button>
+                    )
+                })}
             </div>
-        </>
+        </nav>
     )
 }

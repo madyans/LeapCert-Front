@@ -2,11 +2,15 @@ import api from "@/src/services/api"
 import { getCookie } from "cookies-next"
 import { useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
-import { learningPathData, notesData } from "../constants/mock"
 import { ContentType, SelectedObject } from "../constants/types"
+import useMutateCourseForumTopic from "../hooks/mutations/useMutateCourseForumTopic"
+import { useMutateCreateCourseNote } from "../hooks/mutations/useMutateCourseNotes"
+import useMutateCourseRating from "../hooks/mutations/useMutateCourseRating"
 import useMutateSendObject from "../hooks/mutations/useMutateSendObject"
 import useQueryGetAllObjects from "../hooks/useQueryGetAllObjects"
+import { CourseAccessError } from "../hooks/useQueryGetClassById"
 import useQueryGetClassById from "../hooks/useQueryGetClassById"
+import { ICourseLearningPathItem } from "../interface/IClass"
 import { ObjectType } from "../interface/ObjectType"
 import { FileWithPreview } from "./cursosId.interface"
 
@@ -39,18 +43,23 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
     const [activeTab, setActiveTab] = useState<string>("conteudos")
     const [newNote, setNewNote] = useState<string>("")
     const [newNoteTitle, setNewNoteTitle] = useState<string>("")
-    const [notes, setNotes] = useState(notesData)
-    const [messageToInstructor, setMessageToInstructor] = useState<string>("")
+    const [newForumTitle, setNewForumTitle] = useState<string>("")
+    const [newForumSummary, setNewForumSummary] = useState<string>("")
     const [forumSearch, setForumSearch] = useState<string>("")
     const [control, setControl] = useState<boolean>(false)
     const [isLoggedUserTeacher, setIsLoggedUserTeacher] = useState<boolean>(false)
     const [files, setFiles] = useState<FileWithPreview[]>([])
     const [isDragOver, setIsDragOver] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
+    const [ratingValue, setRatingValue] = useState<number>(0)
+    const [ratingComment, setRatingComment] = useState<string>("")
 
     const { mutateAsync } = useMutateSendObject()
+    const { mutateAsync: mutateCourseRatingAsync, isPending: isSubmittingRating } = useMutateCourseRating(classId)
+    const { mutateAsync: createNoteAsync, isPending: isSavingNote } = useMutateCreateCourseNote(classId)
+    const { mutateAsync: createForumTopicAsync, isPending: isSavingForumTopic } = useMutateCourseForumTopic(classId)
 
-    const { data: course, isLoading, isError } = useQueryGetClassById(classId)
+    const { data: course, isLoading, isError, error } = useQueryGetClassById(classId)
 
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return "0 Bytes"
@@ -166,6 +175,11 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         )
     }, [course?.codigo_professor, professorId])
 
+    useEffect(() => {
+        setRatingValue(Number(course?.minha_nota ?? 0))
+        setRatingComment(course?.meu_comentario ?? "")
+    }, [course?.minha_nota, course?.meu_comentario])
+
     const { data: objects, isLoading: isLoadingObjects } = useQueryGetAllObjects(
         course?.path,
         isAuthenticated && !!course?.path,
@@ -213,30 +227,101 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         [course?.path, isAuthenticated],
     )
 
-    const handleAddNote = () => {
+    const handleAddNote = async () => {
         if (newNoteTitle.trim() && newNote.trim()) {
-            const newNoteItem = {
-                id: notes.length + 1,
-                title: newNoteTitle,
-                content: newNote,
-                date: new Date().toLocaleDateString(),
+            const created = await createNoteAsync({
+                titulo: newNoteTitle.trim(),
+                conteudo: newNote.trim(),
+            })
+
+            if (created !== false) {
+                toast.success("Anotação salva com sucesso")
+                setNewNote("")
+                setNewNoteTitle("")
             }
-            setNotes([...notes, newNoteItem])
-            setNewNote("")
-            setNewNoteTitle("")
         }
     }
 
-    const handleSendMessage = () => {
-        if (messageToInstructor.trim()) {
-            alert("Mensagem enviada com sucesso!")
-            setMessageToInstructor("")
+    const handleOpenLearningPathItem = useCallback(
+        async (item: ICourseLearningPathItem) => {
+            if (!item.arquivo_path) {
+                return
+            }
+
+            setIsResolvingMedia(true)
+            try {
+                const res = await api.get("minio/objects/getObject", {
+                    params: { objectName: item.arquivo_path },
+                })
+
+                if (!res.data?.flag) {
+                    toast.warning("Não foi possível abrir o arquivo da trilha", {
+                        description: res.data?.message ?? "Tente novamente.",
+                        duration: 5000,
+                        closeButton: true,
+                    })
+                    return
+                }
+
+                setSelectedObject({
+                    name: item.arquivo_nome ?? item.titulo,
+                    mimeType: item.arquivo_tipo ?? "application/octet-stream",
+                    url: res.data.data as string,
+                })
+                setSelectedObjectType(item.arquivo_tipo ?? "application/octet-stream")
+            } catch {
+                toast.error("Erro ao obter link do arquivo da trilha", {
+                    duration: 5000,
+                    closeButton: true,
+                })
+            } finally {
+                setIsResolvingMedia(false)
+            }
+        },
+        [],
+    )
+
+    const handleCreateForumTopic = async () => {
+        if (!newForumTitle.trim() || !newForumSummary.trim()) {
+            toast.warning("Informe título e descrição da discussão.")
+            return
+        }
+
+        const created = await createForumTopicAsync({
+            titulo: newForumTitle.trim(),
+            resumo: newForumSummary.trim(),
+        })
+
+        if (created !== false) {
+            toast.success("Discussão criada com sucesso")
+            setNewForumTitle("")
+            setNewForumSummary("")
         }
     }
+
+    const handleSubmitRating = useCallback(async () => {
+        if (!ratingValue) {
+            toast.warning("Selecione uma nota antes de avaliar o curso.")
+            return
+        }
+
+        try {
+            await mutateCourseRatingAsync({
+                nota: ratingValue,
+                comentario: ratingComment,
+            })
+        } catch {
+            toast.error("Não foi possível salvar sua avaliação.")
+        }
+    }, [mutateCourseRatingAsync, ratingComment, ratingValue])
 
     const calculateProgress = () => {
-        const completedItems = learningPathData.filter((item) => item.completed).length
-        return Math.round((completedItems / learningPathData.length) * 100)
+        const items = course?.trilha ?? []
+        if (items.length === 0) {
+            return 0
+        }
+        const completedItems = items.filter((item) => item.concluido_padrao).length
+        return Math.round((completedItems / items.length) * 100)
     }
 
     const fileUrl = selectedObject?.url ?? ""
@@ -247,6 +332,21 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         if (mimeType === "application/pdf") return ContentType.PDF
         return ContentType.Unsupported
     }
+
+    const courseAccessMessage = error instanceof CourseAccessError ? error.message : null
+    const hasObjects = !!objects?.length
+    const courseSections = [...(course?.secoes ?? [])].sort((a, b) => a.ordem - b.ordem)
+    const learningPath = [...(course?.trilha ?? [])].sort((a, b) => a.ordem - b.ordem)
+    const forumTopics = [...(course?.forum_topicos ?? [])].sort((a, b) => a.ordem - b.ordem)
+    const assessmentItems = [...(course?.avaliacoes_itens ?? [])].sort((a, b) => a.ordem - b.ordem)
+    const certificates = [...(course?.certificados ?? [])].sort((a, b) => a.ordem - b.ordem)
+    const notes = course?.anotacoes ?? []
+    const courseDescription = course?.conteudo_descricao?.trim()
+        ? course.conteudo_descricao
+        : "Este curso ainda não possui uma descrição cadastrada."
+    const instructorSummary = course?.instrutor_resumo?.trim()
+        ? course.instrutor_resumo
+        : "As informações do instrutor ainda não foram cadastradas."
 
     return {
         selectedObject,
@@ -260,9 +360,10 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         newNoteTitle,
         setNewNoteTitle,
         notes,
-        setNotes,
-        messageToInstructor,
-        setMessageToInstructor,
+        newForumTitle,
+        setNewForumTitle,
+        newForumSummary,
+        setNewForumSummary,
         forumSearch,
         setForumSearch,
         course,
@@ -273,12 +374,22 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         isLoadingObjectData: isResolvingMedia,
         handleClick,
         handleAddNote,
-        handleSendMessage,
+        handleOpenLearningPathItem,
+        handleCreateForumTopic,
         calculateProgress,
         fileUrl,
         getContentType,
         isLoggedUserTeacher,
         control, setControl,
+        courseAccessMessage,
+        hasObjects,
+        courseSections,
+        learningPath,
+        forumTopics,
+        assessmentItems,
+        certificates,
+        courseDescription,
+        instructorSummary,
         formatFileSize,
         handleDragOver,
         handleDragLeave,
@@ -290,6 +401,14 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         isDragOver,
         files,
         isUploading,
+        ratingValue,
+        setRatingValue,
+        ratingComment,
+        setRatingComment,
+        handleSubmitRating,
+        isSubmittingRating,
+        isSavingNote,
+        isSavingForumTopic,
         classId,
         isAuthenticated,
     }
