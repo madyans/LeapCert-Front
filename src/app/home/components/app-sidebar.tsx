@@ -32,6 +32,8 @@ export function AppSidebar() {
     const { data: modules, isLoading } = useQueryGetModules();
     const router = useRouter()
 
+    const visibleModules = (modules ?? []).filter((item: IModules) => item.nome !== "Meus Cursos")
+
     return (
         <Sidebar>
             <SidebarContent className="bg-white shadow-lg pt-8">
@@ -54,9 +56,9 @@ export function AppSidebar() {
                                         </SidebarMenuItem>
                                     ))
                                 ) : (
-                                    modules?.filter((item: IModules) => item.childoff === null)
+                                    visibleModules.filter((item: IModules) => item.childoff === null)
                                         .map((item: IModules) => {
-                                            const children = modules.filter(
+                                            const children = visibleModules.filter(
                                                 (child) => child.childoff === item.codigo
                                             );
 

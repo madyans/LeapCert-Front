@@ -1,9 +1,10 @@
 import { Button } from "@/src/components/ui/button"
-import { ChevronLeft, ChevronRight, ClockIcon, SearchIcon } from "lucide-react"
+import { ChevronLeft, ChevronRight, ClockIcon, SearchIcon, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import { RootCourseType } from "../root.model"
+import { CLASS_GENDER } from "@/src/constants/CLASS_GENDER"
 
 interface iProps {
     searchTerm: string
@@ -11,11 +12,38 @@ interface iProps {
     selectedCategory: string
     setSelectedCategory: (id: string) => void
     filteredCourses: RootCourseType[],
+    topRatedCourses: RootCourseType[],
     categories: { id: string; name: string }[]
     isLoading: boolean
 }
 
-export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredCourses, categories, isLoading }: iProps) => {
+const parseRating = (rating: string) => {
+    const v = Number.parseFloat(rating || "0")
+    return Number.isFinite(v) ? v : 0
+}
+
+const getCourseImage = (codigo_genero: number | null | undefined, category: string) => {
+    if (codigo_genero && CLASS_GENDER[codigo_genero]) {
+        return `/${CLASS_GENDER[codigo_genero]}`
+    }
+
+    const normalized = category
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+
+    if (normalized.includes("program") || normalized.includes("tecnol")) return "/programacao.png"
+    if (normalized.includes("culin") || normalized.includes("gastron")) return "/culinaria.png"
+    if (normalized.includes("music")) return "/musica.png"
+    if (normalized.includes("automobil")) return "/automobilismo.png"
+    if (normalized.includes("design")) return "/design.png"
+    if (normalized.includes("arte")) return "/artes_visuais.png"
+
+    return "/programacao.png"
+}
+
+export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredCourses, topRatedCourses, categories, isLoading }: iProps) => {
     const heroCourses = useMemo(
         () => filteredCourses.slice(0, 3),
         [filteredCourses],
@@ -202,6 +230,86 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
             </section>
 
             <section
+                id="top-rated"
+                className="w-full bg-white border-y border-emerald-100/70"
+            >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+                    <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+                        <h2 className="text-2xl sm:text-3xl text-zinc-800 font-bold tracking-wide flex items-center gap-2">
+                            <Star className="h-7 w-7 text-amber-500 fill-amber-500" />
+                            Cursos mais <span className="text-emerald-700">bem avaliados</span>
+                        </h2>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const section = document.getElementById("courses")
+                                if (section) {
+                                    section.scrollIntoView({ behavior: "smooth" })
+                                }
+                            }}
+                            className="text-sm text-emerald-700 hover:text-emerald-800 font-medium underline-offset-4 hover:underline"
+                        >
+                            Ver todos os cursos
+                        </button>
+                    </div>
+
+                    {isLoading ? (
+                        <div className="text-center py-12">
+                            <p className="text-zinc-600">Carregando cursos...</p>
+                        </div>
+                    ) : topRatedCourses.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {topRatedCourses.map((course, index) => (
+                                <div
+                                    key={course.id}
+                                    className="group bg-emerald-50/50 rounded-3xl shadow-sm overflow-hidden border border-emerald-100 flex flex-col hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                                >
+                                    <div className="relative w-full h-40 bg-gradient-to-br from-emerald-50 to-emerald-100/80 overflow-hidden">
+                                        <Image
+                                            src={getCourseImage(course.codigo_genero, course.category)}
+                                            alt={course.title}
+                                            fill
+                                            className="object-contain p-3 group-hover:scale-105 transition-transform duration-200"
+                                        />
+                                        <div className="absolute top-2 left-2 bg-white text-emerald-800 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm border border-emerald-100">
+                                            #{index + 1}
+                                        </div>
+                                        <div className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
+                                            <Star className="h-3 w-3 fill-current" />
+                                            {parseRating(course.rating).toFixed(1)}
+                                        </div>
+                                    </div>
+                                    <div className="p-4 flex-1 flex flex-col">
+                                        <h3 className="text-lg font-bold text-emerald-800 mb-1.5 line-clamp-2">
+                                            {course.title}
+                                        </h3>
+                                        <p className="text-zinc-600 mb-4 text-sm flex-1 line-clamp-3">
+                                            {course.description}
+                                        </p>
+                                        <div className="flex justify-between items-center mt-auto pt-1">
+                                            <span className="text-xs text-zinc-500 capitalize">
+                                                {course.category}
+                                            </span>
+                                            <Link
+                                                href={`/home/cursos/${course.id}`}
+                                                className="bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 rounded-full text-xs sm:text-sm transition-colors duration-200 shadow-sm"
+                                            >
+                                                Ver curso
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <p className="text-zinc-600">Nenhum curso avaliado disponível no momento.</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            <section
                 id="courses"
                 className="w-full bg-emerald-50/95"
             >
@@ -253,9 +361,9 @@ export const Main = ({ searchTerm, setSearchTerm, selectedCategory, setSelectedC
                                     key={course.id}
                                     className="group bg-white rounded-3xl shadow-sm overflow-hidden border border-emerald-100 flex flex-col hover:shadow-md hover:-translate-y-1 transition-all duration-200"
                                 >
-                                    <div className="relative h-40 bg-gradient-to-br from-emerald-50 to-emerald-100/80 overflow-hidden">
+                                    <div className="relative w-full h-40 bg-gradient-to-br from-emerald-50 to-emerald-100/80 overflow-hidden">
                                         <Image
-                                            src="/programacao.png"
+                                            src={getCourseImage(course.codigo_genero, course.category)}
                                             alt={course.title}
                                             fill
                                             className="object-contain p-3 group-hover:scale-105 transition-transform duration-200"
@@ -316,9 +424,9 @@ const HeroCourseCard = ({ course, size, muted }: HeroCourseCardProps) => {
             className={`rounded-[24px] bg-white shadow-lg border border-emerald-100 overflow-hidden flex flex-col ${isLarge ? "h-[260px] sm:h-[280px]" : "h-[190px] text-xs"
                 } ${muted ? "opacity-70" : ""}`}
         >
-            <div className={`relative ${isLarge ? "h-32 sm:h-36" : "h-24"} bg-emerald-50`}>
+            <div className={`relative w-full ${isLarge ? "h-32 sm:h-36" : "h-24"} bg-emerald-50`}>
                 <Image
-                    src="/programacao.png"
+                    src={getCourseImage(course.codigo_genero, course.category)}
                     alt={course.title}
                     fill
                     className="object-contain p-3"

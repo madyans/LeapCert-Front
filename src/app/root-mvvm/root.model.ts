@@ -7,6 +7,12 @@ export interface RootCourseType {
     description: string
     category: string
     rating: string
+    codigo_genero?: number | null
+}
+
+const ratingValue = (rating: string | null | undefined) => {
+    const v = Number.parseFloat(String(rating ?? "0"))
+    return Number.isFinite(v) ? v : 0
 }
 
 export const useRootModel = () => {
@@ -22,6 +28,7 @@ export const useRootModel = () => {
                 description: course.descricao,
                 category: (course.genero ?? "geral").toLowerCase(),
                 rating: course.avaliacao,
+                codigo_genero: course.codigo_genero,
             })),
         [classes],
     )
@@ -49,10 +56,19 @@ export const useRootModel = () => {
         [allCourses, searchTerm, selectedCategory],
     )
 
+    const topRatedCourses = useMemo(
+        () =>
+            [...allCourses]
+                .sort((a, b) => ratingValue(b.rating) - ratingValue(a.rating))
+                .slice(0, 4),
+        [allCourses],
+    )
+
     return {
         searchTerm, setSearchTerm,
         selectedCategory, setSelectedCategory,
         filteredCourses,
+        topRatedCourses,
         categories,
         isLoading,
     }

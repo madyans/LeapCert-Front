@@ -18,6 +18,15 @@ export function DashboardCourses() {
 
     const displayCourses = cursosArray
 
+    const ratingValue = (rating: string | null | undefined) => {
+        const v = Number.parseFloat(String(rating ?? "0"))
+        return Number.isFinite(v) ? v : 0
+    }
+
+    const topRatedCourses = [...cursosArray]
+        .sort((a, b) => ratingValue(b.avaliacao) - ratingValue(a.avaliacao))
+        .slice(0, 4)
+
     const getRatingBadgeColor = (rating: string) => {
         const numRating = Number.parseFloat(rating)
         if (numRating >= 4.5) return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
@@ -64,6 +73,65 @@ export function DashboardCourses() {
 
             {/* Courses section */}
             <div>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Star className="w-5 h-5 text-primary" />
+                        Cursos mais bem avaliados
+                    </h3>
+                    <button
+                        onClick={() => router.push('/home/cursos')}
+                        className="text-sm text-primary hover:underline font-medium"
+                    >
+                        Ver catálogo
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {isLoading
+                        ? Array.from({ length: 4 }).map((_, idx) => <CardLoadingClass key={`top-${idx}`} idx={idx} />)
+                        : topRatedCourses.map((curso, index) => (
+                            <Card
+                                key={`top-${curso.codigo}`}
+                                onClick={() => router.push(`/home/cursos/${curso.codigo}`)}
+                                className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:-translate-y-1"
+                            >
+                                <div className="relative overflow-hidden">
+                                    <Image
+                                        src={`/${CLASS_GENDER[(curso.codigo_genero ?? 1) as keyof typeof CLASS_GENDER] ?? "programacao.png"}`}
+                                        alt="Imagem de fundo da categoria"
+                                        width={320}
+                                        height={140}
+                                        className="w-full h-32 object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                                    <Badge
+                                        variant="secondary"
+                                        className="absolute top-2 left-2 bg-white/90 text-gray-800 border-0 shadow-sm text-xs py-0"
+                                    >
+                                        #{index + 1}
+                                    </Badge>
+
+                                    <Badge
+                                        className={`absolute top-2 right-2 gap-1 ${getRatingBadgeColor(curso.avaliacao)} border-0 shadow-sm`}
+                                    >
+                                        <Star className="w-3 h-3 fill-current" />
+                                        {ratingValue(curso.avaliacao).toFixed(1)}
+                                    </Badge>
+                                </div>
+
+                                <CardHeader className="p-4 pb-2 space-y-2">
+                                    <CardTitle className="text-base font-bold leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                                        {curso.nome}
+                                    </CardTitle>
+                                    <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                                        {curso.descricao || "Curso disponivel para acesso."}
+                                    </p>
+                                </CardHeader>
+                            </Card>
+                        ))}
+                </div>
+
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
                         <GraduationCap className="w-5 h-5 text-primary" />

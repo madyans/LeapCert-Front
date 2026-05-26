@@ -31,14 +31,6 @@ async function getModules() {
             childoff: null,
         },
         {
-            codigo: 4,
-            icone: "GraduationCap",
-            nome: "Meus Cursos",
-            rota: "/home/aluno/cursos",
-            hasChildren: false,
-            childoff: 3, // Child of Área do Aluno
-        },
-        {
             codigo: 5,
             icone: "Settings",
             nome: "Configurações",
