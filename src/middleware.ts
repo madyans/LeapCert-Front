@@ -3,6 +3,29 @@ import routes from './constants/ROUTERS';
 import ValidateToken from './services/validate.token';
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/login";
+const SESSION_COOKIE_NAMES = ["accessToken", "UP", "UID", "UU"];
+
+function clearSessionCookies(response: NextResponse) {
+    for (const name of SESSION_COOKIE_NAMES) {
+        response.cookies.set({
+            name,
+            value: "",
+            path: "/",
+            maxAge: 0,
+            expires: new Date(0),
+            sameSite: "lax",
+        });
+        response.cookies.set({
+            name,
+            value: "",
+            path: "/",
+            domain: "localhost",
+            maxAge: 0,
+            expires: new Date(0),
+            sameSite: "lax",
+        });
+    }
+}
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
@@ -28,7 +51,9 @@ export async function middleware(request: NextRequest) {
     if (authToken && !isValid) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
-        return NextResponse.redirect(redirectUrl);
+        const response = NextResponse.redirect(redirectUrl);
+        clearSessionCookies(response);
+        return response;
     }
 
     return NextResponse.next();

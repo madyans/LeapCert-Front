@@ -8,7 +8,7 @@ import { Input } from "@/src/components/ui/input"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip"
 import { CLASS_GENDER } from "@/src/constants/CLASS_GENDER"
 import { dsp } from "@/src/constants/DEFAULT_STYLE_PAGE"
-import { BookOpen, Calendar, Filter, Search, Star } from "lucide-react"
+import { BookOpen, Calendar, CheckCircle2, Filter, LinkIcon, PlayCircle, Search, Star, UserRound } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import type { useCursoModel } from "./cursos.model"
@@ -16,7 +16,7 @@ import type { useCursoModel } from "./cursos.model"
 type CursosViewType = ReturnType<typeof useCursoModel>
 
 export const CursosView = (props: CursosViewType) => {
-    const { cursos, cursosArray, isLoading, filteredCursos, getRatingBadgeColor, getRatingColor, searchTerm, setSearchTerm } = props
+    const { connectCourse, cursos, cursosArray, isConnectingCourse, isLoading, filteredCursos, getRatingBadgeColor, getRatingColor, searchTerm, setSearchTerm } = props
     const router = useRouter()
 
     return (
@@ -85,7 +85,11 @@ export const CursosView = (props: CursosViewType) => {
                 {isLoading
                     ? Array.from({ length: 8 }).map((_, idx) => <CardLoadingClass key={idx} idx={idx} />)
                     : cursos != undefined &&
-                    filteredCursos.map((curso) => (
+                    filteredCursos.map((curso) => {
+                        const statusLabel = curso.is_owner ? "Criado por mim" : curso.is_connected ? "Conectado" : "Conectar-se"
+                        const StatusIcon = curso.is_owner ? CheckCircle2 : curso.is_connected ? PlayCircle : LinkIcon
+
+                        return (
                         <TooltipProvider key={curso.codigo}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -126,10 +130,31 @@ export const CursosView = (props: CursosViewType) => {
                                                 <Calendar className="w-4 h-4" />
                                                 {new Date(curso.created_at).toLocaleDateString("pt-BR")}
                                             </div>
+                                            {curso.nome_professor ? (
+                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                    <UserRound className="w-4 h-4" />
+                                                    {curso.nome_professor}
+                                                </div>
+                                            ) : null}
                                         </CardHeader>
 
                                         <CardContent className="pt-0 space-y-4">
                                             <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{curso.descricao}</p>
+
+                                            {curso.can_access_content ? (
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                                        <span>Progresso</span>
+                                                        <span>{curso.progresso_usuario ?? 0}%</span>
+                                                    </div>
+                                                    <div className="h-2 rounded-full bg-zinc-100">
+                                                        <div
+                                                            className="h-2 rounded-full bg-green-600"
+                                                            style={{ width: `${Math.min(curso.progresso_usuario ?? 0, 100)}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ) : null}
 
                                             <div className="flex items-center justify-between pt-2 border-t border-border/50">
                                                 <div className="flex items-center gap-1">
@@ -138,9 +163,24 @@ export const CursosView = (props: CursosViewType) => {
                                                         {Number.parseFloat(curso.avaliacao).toFixed(1)}
                                                     </span>
                                                 </div>
-                                                <div className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Clique para acessar →
-                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    variant={curso.can_access_content ? "secondary" : "outline"}
+                                                    className="h-8 gap-1.5"
+                                                    disabled={isConnectingCourse}
+                                                    onClick={(event) => {
+                                                        event.stopPropagation()
+                                                        if (curso.can_access_content) {
+                                                            router.push(`/home/cursos/${curso.codigo}`)
+                                                            return
+                                                        }
+                                                        connectCourse(curso.codigo)
+                                                    }}
+                                                >
+                                                    <StatusIcon className="w-3.5 h-3.5" />
+                                                    {statusLabel}
+                                                </Button>
                                             </div>
                                         </CardContent>
 
@@ -155,7 +195,7 @@ export const CursosView = (props: CursosViewType) => {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                    ))}
+                    )})}
             </div>
 
             {!isLoading && filteredCursos.length === 0 && (

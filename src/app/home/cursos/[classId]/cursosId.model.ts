@@ -4,7 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { ContentType, SelectedObject } from "../constants/types"
 import useMutateCourseForumTopic from "../hooks/mutations/useMutateCourseForumTopic"
+import useMutateCourseConnection from "../hooks/mutations/useMutateCourseConnection"
 import { useMutateCreateCourseNote } from "../hooks/mutations/useMutateCourseNotes"
+import useMutateLearningPathProgress from "../hooks/mutations/useMutateLearningPathProgress"
 import useMutateCourseRating from "../hooks/mutations/useMutateCourseRating"
 import useMutateSendObject from "../hooks/mutations/useMutateSendObject"
 import useQueryGetAllObjects from "../hooks/useQueryGetAllObjects"
@@ -56,6 +58,8 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
 
     const { mutateAsync } = useMutateSendObject()
     const { mutateAsync: mutateCourseRatingAsync, isPending: isSubmittingRating } = useMutateCourseRating(classId)
+    const { mutateAsync: connectToCourseAsync, isPending: isConnectingCourse } = useMutateCourseConnection(classId)
+    const { mutateAsync: toggleLearningPathAsync, isPending: isUpdatingLearningPath } = useMutateLearningPathProgress(classId)
     const { mutateAsync: createNoteAsync, isPending: isSavingNote } = useMutateCreateCourseNote(classId)
     const { mutateAsync: createForumTopicAsync, isPending: isSavingForumTopic } = useMutateCourseForumTopic(classId)
 
@@ -316,12 +320,22 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
     }, [mutateCourseRatingAsync, ratingComment, ratingValue])
 
     const calculateProgress = () => {
-        const items = course?.trilha ?? []
-        if (items.length === 0) {
-            return 0
+        return course?.progresso_usuario ?? 0
+    }
+
+    const handleConnectToCourse = async () => {
+        await connectToCourseAsync()
+    }
+
+    const handleToggleLearningPathItem = async (itemId: number, completed: boolean) => {
+        const result = await toggleLearningPathAsync({ itemId, completed })
+        if (result !== false) {
+            toast.success(completed ? "Etapa concluída" : "Etapa reaberta", {
+                description: `Progresso atual: ${result.percentual}%`,
+                duration: 3500,
+                closeButton: true,
+            })
         }
-        const completedItems = items.filter((item) => item.concluido_padrao).length
-        return Math.round((completedItems / items.length) * 100)
     }
 
     const fileUrl = selectedObject?.url ?? ""
@@ -406,7 +420,11 @@ export const useCursosIdModel = (classId: number, isAuthenticated: boolean) => {
         ratingComment,
         setRatingComment,
         handleSubmitRating,
+        handleConnectToCourse,
+        handleToggleLearningPathItem,
         isSubmittingRating,
+        isConnectingCourse,
+        isUpdatingLearningPath,
         isSavingNote,
         isSavingForumTopic,
         classId,

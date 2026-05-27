@@ -1,10 +1,40 @@
 import { useState } from "react";
 import useQueryGetAllClasses from "./hooks/useQueryGetAllClass";
+import api from "@/src/services/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useCursoModel = () => {
     const { data: cursos, isLoading } = useQueryGetAllClasses();
+    const queryClient = useQueryClient();
     const cursosArray = Array.isArray(cursos) ? cursos : [];
     const [searchTerm, setSearchTerm] = useState("")
+
+    const { mutateAsync: connectCourse, isPending: isConnectingCourse } = useMutation({
+        mutationKey: ["connectCourseFromCatalog"],
+        mutationFn: async (classId: number) => {
+            const response = await api.post(`class/${classId}/connect`)
+            if (!response.data.flag) {
+                toast.error("Não foi possível conectar ao curso", {
+                    description: response.data.message,
+                    duration: 5000,
+                    closeButton: true,
+                })
+                return false
+            }
+            return response.data.data
+        },
+        onSuccess: async (result) => {
+            if (!result) return
+            toast.success("Curso conectado", {
+                description: "Ele já aparece na sua área do aluno.",
+                duration: 5000,
+                closeButton: true,
+            })
+            await queryClient.invalidateQueries({ queryKey: ["allClasses"], exact: false })
+            await queryClient.invalidateQueries({ queryKey: ["studentCourses"] })
+        },
+    })
 
     const filteredCursos = cursosArray.filter(
         (curso) =>
@@ -30,5 +60,5 @@ export const useCursoModel = () => {
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
     }
 
-    return { cursos, isLoading, cursosArray, searchTerm, setSearchTerm, filteredCursos, getRatingBadgeColor, getRatingColor }
+    return { cursos, isLoading, cursosArray, searchTerm, setSearchTerm, filteredCursos, getRatingBadgeColor, getRatingColor, connectCourse, isConnectingCourse }
 }   

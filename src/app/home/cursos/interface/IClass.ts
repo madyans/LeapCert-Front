@@ -16,6 +16,7 @@ export interface ICourseLearningPathItem {
     arquivo_path?: string | null
     arquivo_tipo?: string | null
     ordem: number
+    concluido_usuario: boolean
 }
 
 export interface ICourseForumTopic {
@@ -72,8 +73,14 @@ export default interface IClass {
     nome: string
     codigo_genero?: number | null
     genero: string
+    nome_professor?: string
     path?: string | null
     objects?: ObjectType[]
+    connection_status?: "owner" | "connected" | "available" | string
+    is_owner?: boolean
+    is_connected?: boolean
+    can_access_content?: boolean
+    progresso_usuario?: number
     conteudo_descricao: string
     instrutor_resumo: string
     minha_nota?: number | null
@@ -85,4 +92,17 @@ export default interface IClass {
     certificados: ICourseCertificate[]
     contato_professor?: ICourseTeacherContact | null
     anotacoes: ICourseUserNote[]
+}
+
+export interface IStudentCourses {
+    cursos_criados: IClass[]
+    cursos_conectados: IClass[]
+    cursos_em_andamento: IClass[]
+}
+
+export interface ICourseProgress {
+    codigo_curso: number
+    total_itens: number
+    itens_concluidos: number
+    percentual: number
 }

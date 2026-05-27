@@ -16,8 +16,9 @@ import { AllTabs } from "./rigthTabs/Tabs"
 import { VideoComponent } from "./Video"
 
 export const ContentView = (props: CourseClientViewProps) => {
-    const { activeTab, assessmentItems, calculateProgress, certificates, control, course, courseDescription, courseSections, forumSearch, forumTopics, handleAddNote, handleClick, handleCreateForumTopic, handleOpenLearningPathItem, handleSubmitRating, instructorSummary, isLoadingObjects, isLoggedUserTeacher, isSavingForumTopic, isSavingNote, isSubmittingRating, learningPath, newForumSummary, newForumTitle, newNote, newNoteTitle, notes, objects, ratingComment, ratingValue, selectedObject, selectedObjectType, setActiveTab, setControl, setForumSearch, setNewForumSummary, setNewForumTitle, setNewNote, setNewNoteTitle, setRatingComment, setRatingValue, getContentType, isLoadingObjectData, isAuthenticated, classId } = props
+    const { activeTab, assessmentItems, calculateProgress, certificates, control, course, courseDescription, courseSections, forumSearch, forumTopics, handleAddNote, handleClick, handleConnectToCourse, handleCreateForumTopic, handleOpenLearningPathItem, handleSubmitRating, handleToggleLearningPathItem, instructorSummary, isConnectingCourse, isLoadingObjects, isLoggedUserTeacher, isSavingForumTopic, isSavingNote, isSubmittingRating, isUpdatingLearningPath, learningPath, newForumSummary, newForumTitle, newNote, newNoteTitle, notes, objects, ratingComment, ratingValue, selectedObject, selectedObjectType, setActiveTab, setControl, setForumSearch, setNewForumSummary, setNewForumTitle, setNewNote, setNewNoteTitle, setRatingComment, setRatingValue, getContentType, isLoadingObjectData, isAuthenticated, classId } = props
     const rating = Number.parseFloat(course?.avaliacao ?? "0")
+    const canAccessContent = !!course?.can_access_content
 
     const getLearningPathIcon = (type: string) => {
         switch (type) {
@@ -152,7 +153,7 @@ export const ContentView = (props: CourseClientViewProps) => {
                         </>
                         : null}
 
-                    {isAuthenticated ? (
+                    {isAuthenticated && canAccessContent ? (
                         <>
                             <ButtonTabs
                                 activeTab={activeTab}
@@ -167,7 +168,9 @@ export const ContentView = (props: CourseClientViewProps) => {
                                 handleAddNote={handleAddNote}
                                 handleClick={handleClick}
                                 handleOpenLearningPathItem={handleOpenLearningPathItem}
+                                handleToggleLearningPathItem={handleToggleLearningPathItem}
                                 learningPath={learningPath}
+                                isUpdatingLearningPath={isUpdatingLearningPath}
                                 isLoadingObjects={isLoadingObjects}
                                 isSavingNote={isSavingNote}
                                 newNote={newNote}
@@ -191,6 +194,20 @@ export const ContentView = (props: CourseClientViewProps) => {
                                 setNewNoteTitle={setNewNoteTitle}
                             />
                         </>
+                    ) : isAuthenticated ? (
+                        <Card className="mt-2 border-green-200 bg-green-50 shadow-sm">
+                            <CardContent className="pt-6 space-y-4">
+                                <div>
+                                    <h3 className="font-semibold text-green-950">Conecte-se para começar</h3>
+                                    <p className="mt-1 text-sm leading-6 text-green-800">
+                                        Ao conectar-se, este curso entra na sua área do aluno e libera trilha, materiais, fórum, anotações e progresso individual.
+                                    </p>
+                                </div>
+                                <Button onClick={handleConnectToCourse} disabled={isConnectingCourse} className="w-full bg-green-600 hover:bg-green-700">
+                                    {isConnectingCourse ? "Conectando..." : "Conectar-se ao curso"}
+                                </Button>
+                            </CardContent>
+                        </Card>
                     ) : (
                         <Card className="mt-2 border-zinc-200 shadow-sm">
                             <CardContent className="pt-6 space-y-3">
@@ -204,7 +221,7 @@ export const ContentView = (props: CourseClientViewProps) => {
                         </Card>
                     )}
 
-                    {isAuthenticated && course ? (
+                    {isAuthenticated && canAccessContent && course ? (
                         <Card className="mt-4 border-zinc-200 shadow-sm">
                             <CardContent className="pt-6 space-y-3">
                                 <h3 className="font-semibold text-zinc-900">Avaliar curso</h3>

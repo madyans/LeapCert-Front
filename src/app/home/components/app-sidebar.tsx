@@ -21,6 +21,8 @@ import {
     SidebarMenuSubItem,
 } from "@/src/components/ui/sidebar";
 import { Skeleton } from "@/src/components/ui/skeleton";
+import { useUser } from "@/src/context/ContextWrapper";
+import { deleteCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import teste from "../../../../public/TESTE.png";
@@ -30,9 +32,26 @@ import CardNavBar from "./card-navbar";
 
 export function AppSidebar() {
     const { data: modules, isLoading } = useQueryGetModules();
+    const { setLoggedUser } = useUser();
     const router = useRouter()
 
     const visibleModules = (modules ?? []).filter((item: IModules) => item.nome !== "Meus Cursos")
+
+    const handleLogout = async () => {
+        await fetch("/api/logout", {
+            method: "POST",
+            credentials: "include",
+        }).catch(() => undefined);
+
+        for (const name of ["accessToken", "UP", "UID", "UU"]) {
+            deleteCookie(name, { path: "/" });
+            deleteCookie(name, { path: "/", domain: "localhost" });
+        }
+
+        setLoggedUser(null);
+        router.replace("/");
+        router.refresh();
+    }
 
     return (
         <Sidebar>
@@ -133,7 +152,7 @@ export function AppSidebar() {
                     <SidebarFooter className="mt-10">
                         <CardNavBar />
                         <Button
-                            onClick={() => router.push("/")}
+                            onClick={handleLogout}
                             variant={"outline"}
                             className="text-black hover:bg-zinc-100 transition-colors"
                         >

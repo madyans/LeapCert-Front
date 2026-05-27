@@ -20,6 +20,8 @@ interface iProps {
     objects: ObjectType[] | undefined
     handleClick: (e: ObjectType) => void | Promise<void>
     handleOpenLearningPathItem: (item: ICourseLearningPathItem) => void | Promise<void>
+    handleToggleLearningPathItem: (itemId: number, completed: boolean) => void | Promise<void>
+    isUpdatingLearningPath: boolean
     selectedObject: SelectedObject
     learningPath: ICourseLearningPathItem[]
     forumTopics: ICourseForumTopic[]
@@ -42,7 +44,7 @@ interface iProps {
     isSavingForumTopic: boolean
 }
 
-export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumSearch, isLoadingObjects, objects, handleClick, handleOpenLearningPathItem, selectedObject, getFileIcon, notes, learningPath, forumTopics, assessmentItems, certificates, teacherContact, emptyContentDescription, setNewNoteTitle, newNoteTitle, newNote, setNewNote, handleAddNote, isSavingNote, newForumTitle, setNewForumTitle, newForumSummary, setNewForumSummary, handleCreateForumTopic, isSavingForumTopic }: iProps) => {
+export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumSearch, isLoadingObjects, objects, handleClick, handleOpenLearningPathItem, handleToggleLearningPathItem, isUpdatingLearningPath, selectedObject, getFileIcon, notes, learningPath, forumTopics, assessmentItems, certificates, teacherContact, emptyContentDescription, setNewNoteTitle, newNoteTitle, newNote, setNewNote, handleAddNote, isSavingNote, newForumTitle, setNewForumTitle, newForumSummary, setNewForumSummary, handleCreateForumTopic, isSavingForumTopic }: iProps) => {
     const emptyState = (message: string) => (
         <div className="rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-4 text-sm leading-5 text-zinc-600">
             {message}
@@ -66,7 +68,7 @@ export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumS
                                     {learningPath.map((item) => (
                                         <li key={item.codigo} className="flex items-start gap-3 rounded-md border border-zinc-200 bg-zinc-50/70 p-3">
                                             <div className="mt-0.5">
-                                                {item.concluido_padrao ? (
+                                                {item.concluido_usuario ? (
                                                     <CheckCircle className="h-5 w-5 text-green-600" />
                                                 ) : (
                                                     <Circle className="h-5 w-5 text-zinc-300" />
@@ -89,6 +91,16 @@ export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumS
                                                 ) : (
                                                     <div className="mt-2 text-xs text-zinc-500">Sem arquivo anexado</div>
                                                 )}
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    variant={item.concluido_usuario ? "secondary" : "outline"}
+                                                    className="mt-3 h-8"
+                                                    disabled={isUpdatingLearningPath}
+                                                    onClick={() => handleToggleLearningPathItem(item.codigo, !item.concluido_usuario)}
+                                                >
+                                                    {item.concluido_usuario ? "Concluída" : "Marcar como concluída"}
+                                                </Button>
                                             </div>
                                         </li>
                                     ))}
