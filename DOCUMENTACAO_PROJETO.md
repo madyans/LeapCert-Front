@@ -340,25 +340,6 @@ docker-compose up -d --build
   - `LeapCert-Back/Migrations` — migrações EF Core
   - `LeapCert-Back/appsettings*.json` — configurações por ambiente
 
----
-
-## Próximos passos recomendados
-
-- Revisar e mover segredos para um gerenciador de segredos / variáveis de ambiente.
-- Testar o fluxo de login (autenticação por cookie) com o front apontando para a API de desenvolvimento.
-- (Opcional) adicionar scripts de compose agrupados na raiz para orquestrar front+back localmente.
-
----
-
-## Contato
-
-Se quiser, eu posso:
-
-- Gerar um README resumido a partir deste documento e substituir o `LeapCert-Front/README.md` existente.
-- Criar um `.env.example` para o front e um `appsettings.*.example.json` para o back com placeholders.
-
-
----
 
 ## Banco de Dados (SQL Server) — Esquema extraído das migrations
 
