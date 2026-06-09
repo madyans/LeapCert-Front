@@ -106,3 +106,14 @@ export interface ICourseProgress {
     itens_concluidos: number
     percentual: number
 }
+
+export interface ICourseProgressAlert {
+    codigo: number
+    codigo_curso: number
+    nome_curso: string
+    progresso_atual: number
+    dias_sem_evolucao: number
+    ultima_evolucao_em: string
+    ultima_exibicao_em?: string | null
+    mensagem: string
+}
