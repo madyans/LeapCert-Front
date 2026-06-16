@@ -22,10 +22,11 @@ import {
 } from "@/src/components/ui/sidebar";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { useUser } from "@/src/context/ContextWrapper";
+import { cn } from "@/lib/utils";
 import { deleteCookie } from "cookies-next";
-import Image from "next/image";
+import { LogOut } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import teste from "../../../../public/TESTE.png";
 import useQueryGetModules from "../hooks/useQueryGetModules";
 import IModules from "../interface/IModules";
 import CardNavBar from "./card-navbar";
@@ -34,8 +35,14 @@ export function AppSidebar() {
     const { data: modules, isLoading } = useQueryGetModules();
     const { setLoggedUser } = useUser();
     const router = useRouter()
+    const pathname = usePathname()
 
     const visibleModules = (modules ?? []).filter((item: IModules) => item.nome !== "Meus Cursos")
+
+    const isRouteActive = (route?: string) => {
+        if (!route) return false
+        return pathname === route || pathname.startsWith(`${route}/`)
+    }
 
     const handleLogout = async () => {
         await fetch("/api/logout", {
@@ -55,23 +62,25 @@ export function AppSidebar() {
 
     return (
         <Sidebar>
-            <SidebarContent className="bg-white shadow-lg pt-8">
-                <SidebarGroup className="flex flex-col justify-between h-full">
+            <SidebarContent className="border-r border-zinc-200 bg-white">
+                <SidebarGroup className="flex h-full flex-col justify-between px-3 py-4">
                     <div>
-                        <SidebarGroupLabel className="flex items-center justify-center mb-14 mt-4">
-                            <Image
-                                src={teste}
-                                alt="Bem-vindo!"
-                                className="rounded shadow-md w-full"
-                            />
+                        <SidebarGroupLabel className="mb-6 flex h-auto items-center justify-start px-2 py-2">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+                                LC
+                            </div>
+                            <div className="ml-3 min-w-0">
+                                <p className="text-sm font-semibold text-zinc-950">LeapCert</p>
+                                <p className="text-xs font-normal text-zinc-500">Cursos e progresso</p>
+                            </div>
                         </SidebarGroupLabel>
 
-                        <SidebarGroupContent className="mt-2">
-                            <SidebarMenu>
+                        <SidebarGroupContent>
+                            <SidebarMenu className="gap-1">
                                 {isLoading ? (
                                     Array.from({ length: 4 }).map((_, idx) => (
-                                        <SidebarMenuItem key={idx} className="border rounded">
-                                            <Skeleton className="h-10 w-full" />
+                                        <SidebarMenuItem key={idx}>
+                                            <Skeleton className="h-10 w-full rounded-md" />
                                         </SidebarMenuItem>
                                     ))
                                 ) : (
@@ -80,38 +89,47 @@ export function AppSidebar() {
                                             const children = visibleModules.filter(
                                                 (child) => child.childoff === item.codigo
                                             );
+                                            const active = isRouteActive(item.rota) || children.some((child) => isRouteActive(child.rota));
 
                                             if (item.hasChildren && children.length > 0) {
                                                 return (
                                                     <Collapsible key={item.codigo}>
                                                         <SidebarMenuItem>
                                                             <CollapsibleTrigger asChild>
-                                                                <SidebarMenuButton className="w-full flex items-center justify-between gap-3 border border-2">
+                                                                <SidebarMenuButton
+                                                                    className={cn(
+                                                                        "h-10 w-full justify-start gap-3 rounded-md px-3 text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-950",
+                                                                        active && "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+                                                                    )}
+                                                                >
                                                                     <LucideIcon
                                                                         icon={item.icone}
-                                                                        className="text-gray-700 transition-colors duration-300 group-hover:text-black"
+                                                                        className="h-4 w-4 shrink-0"
                                                                     />
-                                                                    <p className="font-semibold text-gray-800 transition-colors duration-300 group-hover:text-black">{item.nome}</p>
+                                                                    <span className="truncate text-sm font-medium">{item.nome}</span>
                                                                     <LucideIcon
                                                                         icon="ChevronDown"
-                                                                        className="h-4 w-4 ml-auto transition-transform group-data-[state=open]:rotate-180"
+                                                                        className="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-180"
                                                                     />
                                                                 </SidebarMenuButton>
                                                             </CollapsibleTrigger>
                                                             <CollapsibleContent>
-                                                                <SidebarMenuSub>
+                                                                <SidebarMenuSub className="ml-4 mt-1 border-l border-zinc-200 pl-3">
                                                                     {children.map((child) => (
                                                                         <SidebarMenuSubItem
                                                                             key={child.codigo}
                                                                             onClick={() => router.push(child.rota)}
-                                                                            className="hover:cursor-pointer"
+                                                                            className={cn(
+                                                                                "rounded-md px-2 py-2 hover:cursor-pointer hover:bg-zinc-100",
+                                                                                isRouteActive(child.rota) && "bg-primary/10 text-primary"
+                                                                            )}
                                                                         >
-                                                                            <div className="flex flex-row gap-3 items-center mt-1">
+                                                                            <div className="flex items-center gap-2">
                                                                                 <LucideIcon
                                                                                     icon={child.icone}
-                                                                                    className="text-gray-700 transition-colors duration-300 group-hover:text-black w-4 h-4"
+                                                                                    className="h-4 w-4 shrink-0"
                                                                                 />
-                                                                                <p className="font-semibold text-gray-800 transition-colors duration-300 group-hover:text-black">{child.nome}</p>
+                                                                                <span className="truncate text-sm font-medium">{child.nome}</span>
                                                                             </div>
                                                                         </SidebarMenuSubItem>
                                                                     ))}
@@ -128,16 +146,19 @@ export function AppSidebar() {
                                                         <SidebarMenuButton asChild>
                                                             <Button
                                                                 onClick={() => router.push(item.rota)}
-                                                                variant="outline"
-                                                                className="border border-2 flex flex-row justify-start gap-3 transition-colors duration-300 hover:bg-gray-100 hover:border-gray-500 focus:ring-2 focus:ring-gray-400"
+                                                                variant="ghost"
+                                                                className={cn(
+                                                                    "h-10 w-full justify-start gap-3 rounded-md px-3 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950",
+                                                                    active && "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary"
+                                                                )}
                                                             >
                                                                 <LucideIcon
                                                                     icon={item.icone}
-                                                                    className="text-gray-700 transition-colors duration-300 group-hover:text-black"
+                                                                    className="h-4 w-4 shrink-0"
                                                                 />
-                                                                <p className="font-semibold text-gray-800 transition-colors duration-300 group-hover:text-black">
+                                                                <span className="truncate text-sm font-medium">
                                                                     {item.nome}
-                                                                </p>
+                                                                </span>
                                                             </Button>
                                                         </SidebarMenuButton>
                                                     </SidebarMenuItem>
@@ -149,14 +170,15 @@ export function AppSidebar() {
                         </SidebarGroupContent>
                     </div>
 
-                    <SidebarFooter className="mt-10">
+                    <SidebarFooter className="mt-6 gap-3 p-0">
                         <CardNavBar />
                         <Button
                             onClick={handleLogout}
-                            variant={"outline"}
-                            className="text-black hover:bg-zinc-100 transition-colors"
+                            variant="outline"
+                            className="h-10 w-full justify-start gap-2 border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
                         >
-                            Desconectar
+                            <LogOut className="h-4 w-4" />
+                            Sair
                         </Button>
                     </SidebarFooter>
                 </SidebarGroup>

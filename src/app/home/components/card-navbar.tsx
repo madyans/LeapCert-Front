@@ -1,12 +1,13 @@
 'use client';
 
+import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { Card } from "@/src/components/ui/card";
+import { useUser } from "@/src/context/ContextWrapper";
 import { getCookie } from "cookies-next";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import sapoHi from "../../../../public/sapoHi.png";
 
 export default function CardNavBar() {
+    const { loggedUser } = useUser();
     const [userName, setUserName] = useState<string>("");
 
     useEffect(() => {
@@ -21,19 +22,25 @@ export default function CardNavBar() {
         }
     }, []);
 
+    const displayName = loggedUser?.nome || userName || "Usuário";
+    const initials = displayName
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase() || "U";
+
     return (
-        <Card className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 bg-white">
-            <Image
-                src={sapoHi}
-                width={60}
-                height={60}
-                alt="Avatar"
-                className="rounded-md"
-            />
-            <div className="flex flex-col justify-center">
-                <p className="text-base font-medium text-gray-800">{userName}</p>
-                <p className="text-sm text-gray-600">Interesses: Desenvolvimento, IA</p>
-                <p className="text-sm text-gray-600">Cursos ministrados: Algoritmos</p>
+        <Card className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm">
+            <Avatar className="h-9 w-9">
+                <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">
+                    {initials}
+                </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-zinc-900">{displayName}</p>
+                <p className="text-xs text-zinc-500">Conta LeapCert</p>
             </div>
         </Card>
     );

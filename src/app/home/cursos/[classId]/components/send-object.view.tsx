@@ -38,84 +38,84 @@ export default function FileUpload(props: CourseClientViewProps) {
 
 
     return (
-        <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 w-full">
-            <div className="bg-gradient-to-r from-green-400 via-blue-400 to-indigo-400 text-white">
-                <div className="max-w-4xl mx-auto px-6 py-8">
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-2">
+        <div className="w-full bg-zinc-50">
+            <div className="border-b border-zinc-200 bg-white">
+                <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0 space-y-2">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                                    <Cloud className="h-6 w-6" />
+                                <div className="rounded-md bg-green-50 p-2 text-green-700">
+                                    <Cloud className="h-5 w-5" />
                                 </div>
-                                <h1 className="text-3xl font-bold">Upload para {course?.nome}</h1>
+                                <h1 className="truncate text-2xl font-semibold text-zinc-950">Upload para {course?.nome}</h1>
                             </div>
-                            <p className="text-blue-100 text-lg">Gerencie seus arquivos na nuvem de forma simples e segura</p>
+                            <p className="text-sm leading-6 text-zinc-600">Adicione materiais do curso e acompanhe o envio dos arquivos selecionados.</p>
                         </div>
                         <Button
                             onClick={() => setControl(!control)}
-                            variant="secondary"
-                            className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-200"
+                            variant="outline"
+                            className="w-fit rounded-md"
                         >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            <ArrowLeft className="mr-2 h-4 w-4" />
                             Voltar ao conteúdo
                         </Button>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-full h-full px-6 py-8 space-y-8">
+            <div className="mx-auto h-full max-w-5xl space-y-6 px-4 py-6 sm:px-6">
                 <Card
                     className={`
-                    border-2 border-dashed transition-all duration-300 shadow-lg hover:shadow-xl
+                    rounded-lg border-2 border-dashed shadow-sm transition-colors
                     ${isDragOver
-                            ? "border-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-blue-200/50 scale-[1.02]"
-                            : "border-gray-300 hover:border-blue-300 bg-white hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50"
+                            ? "border-green-500 bg-green-50"
+                            : "border-zinc-300 bg-white hover:border-green-300"
                         }
                 `}
                 >
                     <CardContent
-                        className="p-16 text-center"
+                        className="p-8 text-center sm:p-12"
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                     >
                         <div
                             className={`
-                            mx-auto w-24 h-24 rounded-full flex items-center justify-center mb-6 transition-all duration-300
+                            mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-lg transition-colors
                             ${isDragOver
-                                    ? "bg-gradient-to-br from-blue-500 to-indigo-500 shadow-lg shadow-blue-500/30"
-                                    : "bg-gradient-to-br from-gray-100 to-gray-200 hover:from-blue-100 hover:to-indigo-100"
+                                    ? "bg-green-600"
+                                    : "bg-zinc-100"
                                 }
                         `}
                         >
                             <Upload
-                                className={`h-12 w-12 transition-colors duration-300 ${isDragOver ? "text-white" : "text-gray-600 hover:text-blue-600"
+                                className={`h-10 w-10 transition-colors ${isDragOver ? "text-white" : "text-zinc-500"
                                     }`}
                             />
                         </div>
 
                         <div className="space-y-4">
                             <div>
-                                <p className="text-2xl font-semibold text-gray-800 mb-2">
-                                    {isDragOver ? "✨ Solte os arquivos aqui!" : "📁 Arraste seus arquivos"}
+                                <p className="mb-2 text-xl font-semibold text-zinc-900">
+                                    {isDragOver ? "Solte os arquivos aqui" : "Arraste seus arquivos"}
                                 </p>
-                                <p className="text-gray-600">Suporte para imagens, vídeos, documentos e muito mais</p>
+                                <p className="text-sm text-zinc-600">Suporte para imagens, vídeos, documentos e arquivos compactados.</p>
                             </div>
 
                             <div className="flex items-center gap-4 justify-center">
-                                <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
-                                <span className="text-sm text-gray-500 font-medium">OU</span>
-                                <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent flex-1"></div>
+                                <div className="h-px flex-1 bg-zinc-200"></div>
+                                <span className="text-sm font-medium text-zinc-500">OU</span>
+                                <div className="h-px flex-1 bg-zinc-200"></div>
                             </div>
 
                             <input type="file" multiple onChange={handleFileSelect} className="hidden" id="file-upload" />
                             <Button
                                 asChild
                                 size="lg"
-                                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                                className="rounded-md bg-green-600 text-white shadow-sm hover:bg-green-700"
                             >
                                 <label htmlFor="file-upload" className="cursor-pointer">
-                                    <Upload className="h-5 w-5 mr-2" />
+                                    <Upload className="mr-2 h-5 w-5" />
                                     Selecionar Arquivos
                                 </label>
                             </Button>
@@ -124,36 +124,36 @@ export default function FileUpload(props: CourseClientViewProps) {
                 </Card>
 
                 {files.length > 0 && (
-                    <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                        <CardContent className="p-8">
-                            <div className="flex items-center justify-between mb-6">
+                    <Card className="rounded-lg border-zinc-200 bg-white shadow-sm">
+                        <CardContent className="p-5 sm:p-6">
+                            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg">
+                                    <div className="rounded-md bg-green-50 p-2">
                                         <CheckCircle2 className="h-5 w-5 text-green-600" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-800">Arquivos Selecionados</h3>
-                                        <p className="text-sm text-gray-600">
+                                        <h3 className="text-lg font-semibold text-zinc-900">Arquivos selecionados</h3>
+                                        <p className="text-sm text-zinc-600">
                                             {files.length} arquivo{files.length !== 1 ? "s" : ""} pronto{files.length !== 1 ? "s" : ""} para
                                             upload
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex flex-wrap gap-3">
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={clearAll}
-                                        className="hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                                        className="rounded-md transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                                     >
                                         <X className="h-4 w-4 mr-2" />
-                                        Limpar Tudo
+                                        Limpar tudo
                                     </Button>
                                     <Button
                                         onClick={simulateUpload}
                                         disabled={isUploading}
                                         size="sm"
-                                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all duration-200"
+                                        className="rounded-md bg-green-600 shadow-sm hover:bg-green-700"
                                     >
                                         <Cloud className="h-4 w-4 mr-2" />
                                         {isUploading ? "Enviando..." : "Enviar para nuvem"}
@@ -165,7 +165,7 @@ export default function FileUpload(props: CourseClientViewProps) {
                                 {files.map((file, index) => (
                                     <div
                                         key={file.id}
-                                        className="group flex items-center gap-4 p-4 border border-gray-200 rounded-xl bg-gradient-to-r from-white to-gray-50 hover:from-blue-50 hover:to-indigo-50 hover:border-blue-200 transition-all duration-200 hover:shadow-md"
+                                        className="group flex items-center gap-4 rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-green-200 hover:bg-green-50/40"
                                         style={{ animationDelay: `${index * 100}ms` }}
                                     >
                                         <div className="flex-shrink-0 relative">
@@ -177,26 +177,26 @@ export default function FileUpload(props: CourseClientViewProps) {
                                                         width={64}
                                                         height={64}
                                                         unoptimized={true}
-                                                        className="h-16 w-16 object-cover rounded-xl shadow-md border-2 border-white"
+                                                        className="h-16 w-16 rounded-lg border border-zinc-200 object-cover"
                                                     />
-                                                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                                                    <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-green-600">
                                                         <ImageIcon className="h-3 w-3 text-white" />
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-md border-2 border-white">
+                                                <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-100">
                                                     {getFileIcon(file)}
                                                 </div>
                                             )}
                                         </div>
 
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-semibold text-gray-800 truncate text-lg">{file.name}</p>
+                                            <p className="truncate text-base font-semibold text-zinc-900">{file.name}</p>
                                             <div className="flex items-center gap-3 mt-1">
-                                                <span className="text-sm text-gray-600 font-medium">{formatFileSize(file.size)}</span>
+                                                <span className="text-sm font-medium text-zinc-600">{formatFileSize(file.size)}</span>
                                                 <Badge
                                                     variant="secondary"
-                                                    className="text-xs bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-blue-200"
+                                                    className="border-green-200 bg-green-50 text-xs text-green-700"
                                                 >
                                                     {file.type && file.type.includes("/") ? file.type.split("/")[1].toUpperCase() : "Unknown"}
                                                 </Badge>
@@ -205,10 +205,10 @@ export default function FileUpload(props: CourseClientViewProps) {
                                             {typeof file.uploadProgress === "number" && file.uploadProgress > 0 && (
                                                 <div className="mt-3 space-y-2">
                                                     <div className="flex justify-between items-center">
-                                                        <span className="text-sm font-medium text-gray-700">Progresso do upload</span>
-                                                        <span className="text-sm font-semibold text-blue-600">{file.uploadProgress}%</span>
+                                                        <span className="text-sm font-medium text-zinc-700">Progresso do upload</span>
+                                                        <span className="text-sm font-semibold text-green-700">{file.uploadProgress}%</span>
                                                     </div>
-                                                    <Progress value={file.uploadProgress} className="h-3 bg-gray-200" />
+                                                    <Progress value={file.uploadProgress} className="h-3 bg-zinc-200" />
                                                 </div>
                                             )}
                                         </div>
@@ -217,7 +217,7 @@ export default function FileUpload(props: CourseClientViewProps) {
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => removeFile(file.id)}
-                                            className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-100 hover:text-red-600 rounded-full w-10 h-10 p-0"
+                                            className="h-10 w-10 flex-shrink-0 rounded-md p-0 opacity-0 transition-opacity hover:bg-red-100 hover:text-red-600 group-hover:opacity-100"
                                         >
                                             <X className="h-4 w-4" />
                                         </Button>
@@ -229,24 +229,24 @@ export default function FileUpload(props: CourseClientViewProps) {
                 )}
 
                 {Array.isArray(files) && files.length > 0 && (
-                    <Card className="bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200 shadow-md">
+                    <Card className="rounded-lg border-zinc-200 bg-white shadow-sm">
                         <CardContent className="p-6">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-blue-600">{files.length}</div>
-                                    <div className="text-sm text-gray-600 font-medium">Arquivo{files.length !== 1 ? "s" : ""}</div>
+                                    <div className="text-2xl font-bold text-green-700">{files.length}</div>
+                                    <div className="text-sm font-medium text-zinc-600">Arquivo{files.length !== 1 ? "s" : ""}</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-indigo-600">
+                                    <div className="text-2xl font-bold text-zinc-900">
                                         {formatFileSize(files.reduce((total, file) => total + (file.size ?? 0), 0))}
                                     </div>
-                                    <div className="text-sm text-gray-600 font-medium">Tamanho Total</div>
+                                    <div className="text-sm font-medium text-zinc-600">Tamanho total</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-purple-600">
+                                    <div className="text-2xl font-bold text-zinc-900">
                                         {new Set(files.map((f) => (f.type ?? "").split("/")[0])).size}
                                     </div>
-                                    <div className="text-sm text-gray-600 font-medium">
+                                    <div className="text-sm font-medium text-zinc-600">
                                         Tipo{new Set(files.map((f) => (f.type ?? "").split("/")[0])).size !== 1 ? "s" : ""}
                                     </div>
                                 </div>

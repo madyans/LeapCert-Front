@@ -2,7 +2,7 @@ import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { Textarea } from "@/src/components/ui/textarea"
-import { ArrowLeft, BookMarked, Circle, Download, FileIcon, FileQuestion, FileText, Film, ImageIcon, Loader2, PenLine, PlayCircle, Star } from "lucide-react"
+import { ArrowLeft, BookMarked, Circle, Download, FileIcon, FileQuestion, FileText, Film, ImageIcon, Loader2, PenLine, PlayCircle, Settings, Star } from "lucide-react"
 import image from "../../../../../../public/Frois.jpeg"
 import Link from "next/link"
 import { ContentType } from "../../constants/types"
@@ -97,8 +97,8 @@ export const ContentView = (props: CourseClientViewProps) => {
     return (
         <div className="flex-1 overflow-auto bg-zinc-50">
             <div className="border-b border-zinc-200 bg-white">
-                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div className="min-w-0">
                             <Link href="/home/cursos" className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900">
                                 <ArrowLeft className="h-4 w-4" />
@@ -112,7 +112,7 @@ export const ContentView = (props: CourseClientViewProps) => {
                             </p>
                         </div>
 
-                        <div className="flex shrink-0 items-center gap-3 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2">
+                        <div className="flex shrink-0 items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
                             <div className="flex items-center gap-1">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <Star
@@ -127,30 +127,59 @@ export const ContentView = (props: CourseClientViewProps) => {
                 </div>
             </div>
 
-            <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:px-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-                <main className="min-w-0">
-                    <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-                        <LeaftTab
-                            image={image}
-                            courseName={course?.nome ?? "Curso"}
-                            summary={instructorSummary}
-                            sectionCount={courseSections.length}
-                        />
+            <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:px-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+                <main className="min-w-0 space-y-6">
+                    <CenterTab calculateProgress={calculateProgress} description={courseDescription} sections={courseSections} />
 
-                        <CenterTab calculateProgress={calculateProgress} description={courseDescription} sections={courseSections} />
-                    </div>
+                    {isAuthenticated && selectedObject ? (
+                        <Card className="overflow-hidden rounded-lg border-zinc-200 shadow-sm">
+                            <div className="flex flex-col gap-2 border-b bg-zinc-100 p-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex min-w-0 items-center gap-2 font-medium">
+                                    {getFileIcon(selectedObjectType || selectedObject.mimeType || "")}
+                                    <span className="truncate">{selectedObject.name}</span>
+                                </div>
+                                {(selectedObjectType || selectedObject.mimeType) ? (
+                                    <Badge variant="outline" className="w-fit">{selectedObjectType || selectedObject.mimeType}</Badge>
+                                ) : null}
+                            </div>
+                            <CardContent className="p-4">{renderContent()}</CardContent>
+                        </Card>
+                    ) : (
+                        isAuthenticated && canAccessContent ? (
+                            <Card className="rounded-lg border-dashed border-zinc-200 bg-white shadow-sm">
+                                <CardContent className="flex min-h-[220px] flex-col items-center justify-center p-6 text-center">
+                                    <FileIcon className="mb-3 h-10 w-10 text-zinc-300" />
+                                    <h3 className="text-base font-semibold text-zinc-950">Nenhum material selecionado</h3>
+                                    <p className="mt-1 max-w-md text-sm text-zinc-500">
+                                        Escolha um material na lateral para visualizar o conteúdo aqui.
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        ) : null
+                    )}
                 </main>
 
-                <aside className="min-w-0 xl:sticky xl:top-4 xl:self-start">
+                <aside className="min-w-0 space-y-4 xl:sticky xl:top-20 xl:self-start">
+                    <LeaftTab
+                        image={image}
+                        courseName={course?.nome ?? "Curso"}
+                        summary={instructorSummary}
+                        sectionCount={courseSections.length}
+                    />
+
                     {isAuthenticated && isLoggedUserTeacher ?
-                        <>
-                            <div className="grid gap-2 mb-4">
+                        <Card className="rounded-lg border-zinc-200 shadow-sm">
+                            <CardContent className="space-y-3 p-4">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-zinc-950">
+                                    <Settings className="h-4 w-4 text-primary" />
+                                    Ações do professor
+                                </div>
                                 <Button className="w-full bg-green-600 shadow-sm hover:bg-green-700" onClick={() => setControl(!control)}>Criar conteúdo</Button>
                                 <Button asChild variant="outline" className="w-full">
                                     <Link href={`/home/cursos/${classId}/edit`}>Editar tópicos</Link>
                                 </Button>
-                            </div>
-                        </>
+                            </CardContent>
+                        </Card>
                         : null}
 
                     {isAuthenticated && canAccessContent ? (
@@ -222,7 +251,7 @@ export const ContentView = (props: CourseClientViewProps) => {
                     )}
 
                     {isAuthenticated && canAccessContent && course ? (
-                        <Card className="mt-4 border-zinc-200 shadow-sm">
+                        <Card className="rounded-lg border-zinc-200 shadow-sm">
                             <CardContent className="pt-6 space-y-3">
                                 <h3 className="font-semibold text-zinc-900">Avaliar curso</h3>
                                 <div className="flex flex-wrap gap-2">
@@ -251,23 +280,6 @@ export const ContentView = (props: CourseClientViewProps) => {
                     ) : null}
                 </aside>
             </div>
-
-            {isAuthenticated && selectedObject && (
-                <div className="mx-auto max-w-7xl px-4 pb-6 sm:px-6">
-                    <Card className="overflow-hidden rounded-md border-zinc-200 shadow-sm">
-                        <div className="bg-zinc-100 p-3 border-b flex items-center justify-between">
-                            <div className="font-medium flex items-center gap-2">
-                                {getFileIcon(selectedObjectType || selectedObject.mimeType || "")}
-                                <span>{selectedObject.name}</span>
-                            </div>
-                            {(selectedObjectType || selectedObject.mimeType) ? (
-                                <Badge variant="outline">{selectedObjectType || selectedObject.mimeType}</Badge>
-                            ) : null}
-                        </div>
-                        <CardContent className="p-4">{renderContent()}</CardContent>
-                    </Card>
-                </div>
-            )}
         </div>
     )
 }

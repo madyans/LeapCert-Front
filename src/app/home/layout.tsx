@@ -12,19 +12,22 @@ export default async function Layout({ children }: { children: React.ReactNode }
     return (
         <SidebarProvider 
             defaultOpen={isAuthenticated}
-            className="bg-[url(../../public/fundoMassaMasTaClaro.png)] bg-[#001122] bg-cover bg-bottom bg-fixed"
+            className="min-h-screen bg-zinc-50 text-zinc-950"
         >
             {isAuthenticated && <AppSidebar />}
             <CourseProgressAlertToaster enabled={isAuthenticated} />
-            <main className="bg-white flex flex-col text-white w-screen flex m-4 rounded-lg gap-2">
-                <div className="flex flex-row mt-2 ml-2 gap-4 items-center text-black">
-                    {isAuthenticated && <SidebarTrigger className="hover:bg-emerald-200" />}
-                    <h1 className="text-2xl font-bold text-gray-800">
-                        Seja bem-vindo ao <span className="text-primary">LeapCert</span>!
-                    </h1>
+            <main className="flex min-h-screen min-w-0 flex-1 flex-col bg-zinc-50 text-zinc-950">
+                <div className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-zinc-200 bg-white/95 px-4 backdrop-blur">
+                    {isAuthenticated && <SidebarTrigger className="hover:bg-zinc-100" />}
+                    <div className="min-w-0">
+                        <p className="text-sm font-semibold text-zinc-950">LeapCert</p>
+                        <p className="text-xs text-zinc-500">Área de aprendizagem</p>
+                    </div>
                 </div>
                 <Separator className="" />
-                {children}
+                <div className="min-w-0 flex-1">
+                    {children}
+                </div>
             </main>
         </SidebarProvider>
     )

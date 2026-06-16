@@ -51,7 +51,7 @@ export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumS
         </div>
     )
 
-    const panelClass = "mt-4 rounded-md border border-zinc-200 bg-white shadow-sm"
+    const panelClass = "mt-3 rounded-lg border border-zinc-200 bg-white shadow-sm"
     const panelHeaderClass = "border-b border-zinc-200 px-4 py-3 text-sm font-semibold text-zinc-950"
     const panelBodyClass = "p-4"
     const fieldClass = "w-full rounded-md border border-zinc-300 bg-white p-2 text-sm text-zinc-900 caret-zinc-900 placeholder:text-zinc-400 focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-100"
@@ -185,7 +185,7 @@ export const AllTabs = ({ activeTab, getLearningPathIcon, forumSearch, setForumS
                             </div>
                         ) : objects && objects.length > 0 ? (
                             <ScrollArea className="max-h-64 w-full pr-4">
-                                <div className="min-w-[260px]">
+                                <div className="min-w-0">
                                     <ul className="space-y-2">
                                         {objects.map((obj: ObjectType, idx: number) => (
                                             <li key={idx}>

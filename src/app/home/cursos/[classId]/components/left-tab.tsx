@@ -10,12 +10,12 @@ interface iProps {
 
 export const LeaftTab = ({ image, courseName, summary, sectionCount }: iProps) => {
     return (
-        <aside className="rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
+        <aside className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
             <div className="overflow-hidden rounded-md border border-zinc-100 bg-zinc-50">
                 <Image
                     src={image}
-                    alt="Course Instructor"
-                    className="aspect-square h-auto w-full object-cover"
+                    alt="Imagem de apoio do curso"
+                    className="aspect-video h-auto w-full object-cover"
                 />
             </div>
 
@@ -25,7 +25,7 @@ export const LeaftTab = ({ image, courseName, summary, sectionCount }: iProps) =
                     <div className="mt-1 text-base font-semibold leading-snug text-zinc-950">{courseName}</div>
                 </div>
 
-                <div className="rounded-md bg-green-50 p-3 text-green-950">
+                <div className="rounded-md border border-green-100 bg-green-50 p-3 text-green-950">
                     <div className="flex items-center gap-2 font-semibold text-green-700">
                         <BookOpen className="h-4 w-4" />
                         Resumo

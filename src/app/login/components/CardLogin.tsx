@@ -17,9 +17,11 @@ interface iProps {
 
 export const CardLogin = ({ form, onSubmit, setShowPassword, showPassword, isPending }: iProps) => {
     return (
-        <div className="bg-white/10 backdrop-blur-md shadow-2xl rounded-2xl p-8 space-y-6 border border-green-400/30 mt-16">
-            <h1 className="text-3xl font-bold text-white text-center">Bem-vindo!</h1>
-            <p className="text-green-100 text-center">Entre para acessar o sistema</p>
+        <div className="mt-16 space-y-6 rounded-xl border border-zinc-200 bg-white p-8 shadow-md">
+            <div className="space-y-2 text-center">
+                <h2 className="text-2xl font-semibold text-zinc-950">Bem-vindo</h2>
+                <p className="text-sm text-zinc-500">Entre para continuar seus cursos.</p>
+            </div>
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -28,20 +30,20 @@ export const CardLogin = ({ form, onSubmit, setShowPassword, showPassword, isPen
                         name="usuario"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-green-100">Usuário</FormLabel>
+                                <FormLabel className="text-zinc-700">Usuário</FormLabel>
                                 <FormControl>
                                     <div className="relative">
                                         <Input
                                             placeholder="Digite seu usuário"
                                             {...field}
-                                            className="bg-white/10 text-white border-green-400/30 focus-visible:ring-green-400 pl-10"
+                                            className="border-zinc-300 bg-white pl-10 text-zinc-950 placeholder:text-zinc-400 focus-visible:ring-green-100"
                                         />
                                         <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                                            <UserIcon className="h-5 w-5 text-green-600" />
+                                            <UserIcon className="h-5 w-5 text-zinc-400" />
                                         </div>
                                     </div>
                                 </FormControl>
-                                <FormMessage className="text-yellow-200" />
+                                <FormMessage className="text-red-600" />
                             </FormItem>
                         )}
                     />
@@ -51,35 +53,35 @@ export const CardLogin = ({ form, onSubmit, setShowPassword, showPassword, isPen
                         name="senha"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-green-100">Senha</FormLabel>
+                                <FormLabel className="text-zinc-700">Senha</FormLabel>
                                 <FormControl>
                                     <div className="relative">
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="Digite sua senha"
                                             {...field}
-                                            className="bg-white/10 text-white border-green-400/30 focus-visible:ring-green-400 pl-10 pr-10"
+                                            className="border-zinc-300 bg-white pl-10 pr-10 text-zinc-950 placeholder:text-zinc-400 focus-visible:ring-green-100"
                                         />
                                         <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                                            <LockIcon className="h-5 w-5 text-green-600" />
+                                            <LockIcon className="h-5 w-5 text-zinc-400" />
                                         </div>
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-300 hover:text-green-100"
+                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-zinc-700"
                                         >
                                             {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                                         </button>
                                     </div>
                                 </FormControl>
-                                <FormMessage className="text-yellow-200" />
+                                <FormMessage className="text-red-600" />
                             </FormItem>
                         )}
                     />
 
                     <Button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-green-500/30"
+                        className="w-full rounded-md bg-green-600 py-2 font-medium text-white shadow-sm transition-colors hover:bg-green-700"
                     >
                         {isPending ? (
                             <div className="flex items-center justify-center gap-2">
@@ -94,7 +96,7 @@ export const CardLogin = ({ form, onSubmit, setShowPassword, showPassword, isPen
 
             <div className="flex flex-col gap-5 pt-2">
                 <div className="text-center">
-                    <a href="#" className="text-green-200 hover:text-white text-sm transition-colors">
+                    <a href="#" className="text-sm font-medium text-green-700 transition-colors hover:text-green-800">
                         Esqueceu sua senha?
                     </a>
                 </div>
@@ -102,7 +104,7 @@ export const CardLogin = ({ form, onSubmit, setShowPassword, showPassword, isPen
                 <Link href="/cadastro" className="w-full block" tabIndex={-1}>
                     <Button
                         type="button"
-                        className="w-full bg-white/5 border border-green-400/40 text-green-100 hover:bg-white/10 hover:text-white hover:border-green-300 font-medium py-2 rounded-lg transition-all duration-200 shadow-sm"
+                        className="w-full rounded-md border border-zinc-200 bg-white py-2 font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50 hover:text-zinc-950"
                     >
                         Não tem cadastro? Faça ele aqui.
                     </Button>

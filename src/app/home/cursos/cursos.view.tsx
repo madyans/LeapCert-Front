@@ -1,217 +1,166 @@
 "use client"
 
 import CardLoadingClass from "@/src/components/createdComponents/card-loading-class"
-import { Badge } from "@/src/components/ui/badge"
+import CourseCard from "@/src/components/createdComponents/course-card"
 import { Button } from "@/src/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Card, CardContent } from "@/src/components/ui/card"
 import { Input } from "@/src/components/ui/input"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip"
-import { CLASS_GENDER } from "@/src/constants/CLASS_GENDER"
-import { dsp } from "@/src/constants/DEFAULT_STYLE_PAGE"
-import { BookOpen, Calendar, CheckCircle2, Filter, LinkIcon, PlayCircle, Search, Star, UserRound } from "lucide-react"
-import Image from "next/image"
+import { BookOpen, CheckCircle2, GraduationCap, Plus, Search, Star } from "lucide-react"
 import { useRouter } from "next/navigation"
+import type { ComponentType } from "react"
+import type IClass from "./interface/IClass"
 import type { useCursoModel } from "./cursos.model"
 
 type CursosViewType = ReturnType<typeof useCursoModel>
 
+function ratingValue(rating: string | null | undefined) {
+    const value = Number.parseFloat(String(rating ?? "0"))
+    return Number.isFinite(value) ? value : 0
+}
+
 export const CursosView = (props: CursosViewType) => {
-    const { connectCourse, cursos, cursosArray, isConnectingCourse, isLoading, filteredCursos, getRatingBadgeColor, getRatingColor, searchTerm, setSearchTerm } = props
+    const {
+        connectCourse,
+        cursosArray,
+        isConnectingCourse,
+        isLoading,
+        filteredCursos,
+        searchTerm,
+        setSearchTerm,
+    } = props
     const router = useRouter()
 
+    const handleOpen = (curso: IClass) => {
+        router.push(`/home/cursos/${curso.codigo}`)
+    }
+
+    const handleAction = async (curso: IClass) => {
+        if (curso.can_access_content || curso.is_connected || curso.is_owner) {
+            handleOpen(curso)
+            return
+        }
+
+        await connectCourse(curso.codigo)
+    }
+
     return (
-        <div className={`${dsp} space-y-8`}>
-            <div className="space-y-6">
-                <div className="text-center space-y-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-medium">
-                        <BookOpen className="w-4 h-4" />
-                        Catálogo de Cursos
-                    </div>
-                    <h1 className="text-4xl font-bold tracking-tight">
-                        Descubra Novos
-                        <span className="text-primary"> Conhecimentos</span>
+        <div className="mx-auto w-full max-w-7xl space-y-6 p-4 sm:p-6">
+            <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="space-y-2">
+                    <p className="text-sm font-medium text-primary">Catálogo</p>
+                    <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 md:text-3xl">
+                        Catálogo de cursos
                     </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Explore nossa coleção de cursos cuidadosamente selecionados para impulsionar sua carreira
+                    <p className="max-w-2xl text-sm leading-6 text-zinc-600">
+                        Encontre cursos, acompanhe seu acesso e conecte-se a novos conteúdos da plataforma.
                     </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                    <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                        <Input
-                            placeholder="Buscar cursos..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 h-11"
-                        />
-                    </div>
-                    <div className="flex gap-3">
-                        <Button variant="outline" size="sm" className="gap-2" onClick={() => router.push("/home")}>
-                            Voltar ao Dashboard
-                        </Button>
-                        <Button variant="outline" size="sm" className="gap-2">
-                            <Filter className="w-4 h-4" />
-                            Filtros
-                        </Button>
-                        <Button className="gap-2 shadow-lg" onClick={() => router.push("/home/cursos/create")}>
-                            <BookOpen className="w-4 h-4" />
-                            Criar Curso
-                        </Button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 p-4 rounded-xl border">
-                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{cursosArray.length}</div>
-                        <div className="text-sm text-muted-foreground">Cursos Disponíveis</div>
-                    </div>
-                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950 p-4 rounded-xl border">
-                        <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                            {cursosArray.filter((c) => Number.parseFloat(c.avaliacao) >= 4).length}
-                        </div>
-                        <div className="text-sm text-muted-foreground">Bem Avaliados</div>
-                    </div>
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 p-4 rounded-xl border">
-                        <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                            {new Set(cursosArray.map((c) => c.genero)).size}
-                        </div>
-                        <div className="text-sm text-muted-foreground">Categorias</div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {isLoading
-                    ? Array.from({ length: 8 }).map((_, idx) => <CardLoadingClass key={idx} idx={idx} />)
-                    : cursos != undefined &&
-                    filteredCursos.map((curso) => {
-                        const statusLabel = curso.is_owner ? "Criado por mim" : curso.is_connected ? "Conectado" : "Conectar-se"
-                        const StatusIcon = curso.is_owner ? CheckCircle2 : curso.is_connected ? PlayCircle : LinkIcon
-
-                        return (
-                        <TooltipProvider key={curso.codigo}>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Card
-                                        onClick={() => router.push(`/home/cursos/${curso.codigo}`)}
-                                        className="group relative overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 hover:scale-[1.02] hover:-translate-y-1"
-                                    >
-                                        <div className="relative overflow-hidden">
-                                            <Image
-                                                src={`/${CLASS_GENDER[(curso.codigo_genero ?? 1) as keyof typeof CLASS_GENDER] ?? "programacao.png"}`}
-                                                alt="Imagem de fundo da categoria"
-                                                width={320}
-                                                height={180}
-                                                className="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-110"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                                            <Badge
-                                                className={`absolute top-3 right-3 gap-1 ${getRatingBadgeColor(curso.avaliacao)} border-0 shadow-lg`}
-                                            >
-                                                <Star className="w-3 h-3 fill-current" />
-                                                {Number.parseFloat(curso.avaliacao).toFixed(1)}
-                                            </Badge>
-
-                                            <Badge
-                                                variant="secondary"
-                                                className="absolute top-3 left-3 bg-white/90 text-gray-800 border-0 shadow-lg"
-                                            >
-                                                {curso.genero}
-                                            </Badge>
-                                        </div>
-
-                                        <CardHeader className="pb-3 space-y-3">
-                                            <CardTitle className="text-lg font-bold leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-                                                {curso.nome}
-                                            </CardTitle>
-                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                <Calendar className="w-4 h-4" />
-                                                {new Date(curso.created_at).toLocaleDateString("pt-BR")}
-                                            </div>
-                                            {curso.nome_professor ? (
-                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                    <UserRound className="w-4 h-4" />
-                                                    {curso.nome_professor}
-                                                </div>
-                                            ) : null}
-                                        </CardHeader>
-
-                                        <CardContent className="pt-0 space-y-4">
-                                            <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">{curso.descricao}</p>
-
-                                            {curso.can_access_content ? (
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                        <span>Progresso</span>
-                                                        <span>{curso.progresso_usuario ?? 0}%</span>
-                                                    </div>
-                                                    <div className="h-2 rounded-full bg-zinc-100">
-                                                        <div
-                                                            className="h-2 rounded-full bg-green-600"
-                                                            style={{ width: `${Math.min(curso.progresso_usuario ?? 0, 100)}%` }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            ) : null}
-
-                                            <div className="flex items-center justify-between pt-2 border-t border-border/50">
-                                                <div className="flex items-center gap-1">
-                                                    <Star className={`w-4 h-4 ${getRatingColor(curso.avaliacao)}`} />
-                                                    <span className={`font-semibold text-sm ${getRatingColor(curso.avaliacao)}`}>
-                                                        {Number.parseFloat(curso.avaliacao).toFixed(1)}
-                                                    </span>
-                                                </div>
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant={curso.can_access_content ? "secondary" : "outline"}
-                                                    className="h-8 gap-1.5"
-                                                    disabled={isConnectingCourse}
-                                                    onClick={(event) => {
-                                                        event.stopPropagation()
-                                                        if (curso.can_access_content) {
-                                                            router.push(`/home/cursos/${curso.codigo}`)
-                                                            return
-                                                        }
-                                                        connectCourse(curso.codigo)
-                                                    }}
-                                                >
-                                                    <StatusIcon className="w-3.5 h-3.5" />
-                                                    {statusLabel}
-                                                </Button>
-                                            </div>
-                                        </CardContent>
-
-                                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                    </Card>
-                                </TooltipTrigger>
-                                <TooltipContent side="top" className="bg-gray-900 text-white border-gray-700">
-                                    <p className="font-medium">Clique para acessar o curso</p>
-                                    <p className="text-xs text-gray-300">
-                                        {curso.genero} • ⭐ {Number.parseFloat(curso.avaliacao).toFixed(1)}
-                                    </p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    )})}
-            </div>
-
-            {!isLoading && filteredCursos.length === 0 && (
-                <div className="text-center py-16 space-y-4">
-                    <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
-                        <Search className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-xl font-semibold">Nenhum curso encontrado</h3>
-                    <p className="text-muted-foreground max-w-md mx-auto">
-                        Tente ajustar sua busca ou explore outras categorias disponíveis
-                    </p>
-                    <Button variant="outline" onClick={() => setSearchTerm("")} className="mt-4">
-                        Limpar Filtros
+                <div className="flex flex-col gap-2 sm:flex-row">
+                    <Button variant="outline" onClick={() => router.push("/home")} className="sm:w-auto">
+                        Voltar ao dashboard
+                    </Button>
+                    <Button onClick={() => router.push("/home/cursos/create")} className="gap-2 sm:w-auto">
+                        <Plus className="h-4 w-4" />
+                        Criar curso
                     </Button>
                 </div>
-            )}
+            </section>
+
+            <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                <CatalogMetric icon={BookOpen} label="Cursos disponíveis" value={cursosArray.length} />
+                <CatalogMetric
+                    icon={Star}
+                    label="Bem avaliados"
+                    value={cursosArray.filter((curso) => ratingValue(curso.avaliacao) >= 4).length}
+                />
+                <CatalogMetric
+                    icon={CheckCircle2}
+                    label="Com acesso liberado"
+                    value={cursosArray.filter((curso) => curso.can_access_content || curso.is_connected || curso.is_owner).length}
+                />
+            </section>
+
+            <section className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="relative w-full md:max-w-md">
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                        <Input
+                            placeholder="Buscar por nome ou categoria"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="h-10 pl-9"
+                        />
+                    </div>
+                    <p className="text-sm text-zinc-500">
+                        {filteredCursos.length} {filteredCursos.length === 1 ? "curso encontrado" : "cursos encontrados"}
+                    </p>
+                </div>
+            </section>
+
+            <section>
+                <div className="mb-4 flex items-center justify-between">
+                    <div>
+                        <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-950">
+                            <GraduationCap className="h-5 w-5 text-primary" />
+                            Todos os cursos
+                        </h2>
+                        <p className="mt-1 text-sm text-zinc-500">Use a busca para filtrar rapidamente a lista.</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {isLoading
+                        ? Array.from({ length: 8 }).map((_, idx) => <CardLoadingClass key={idx} idx={idx} />)
+                        : filteredCursos.map((curso) => (
+                            <CourseCard
+                                key={curso.codigo}
+                                course={curso}
+                                variant="catalog"
+                                actionDisabled={isConnectingCourse}
+                                onOpen={handleOpen}
+                                onAction={handleAction}
+                            />
+                        ))}
+                </div>
+
+                {!isLoading && filteredCursos.length === 0 ? (
+                    <div className="mt-6 rounded-lg border border-dashed border-zinc-200 bg-white p-10 text-center">
+                        <Search className="mx-auto mb-3 h-10 w-10 text-zinc-300" />
+                        <h3 className="text-base font-semibold text-zinc-950">Nenhum curso encontrado</h3>
+                        <p className="mx-auto mt-1 max-w-md text-sm text-zinc-500">
+                            Tente buscar por outro termo ou limpe a busca para ver todos os cursos disponíveis.
+                        </p>
+                        <Button variant="outline" onClick={() => setSearchTerm("")} className="mt-4">
+                            Limpar busca
+                        </Button>
+                    </div>
+                ) : null}
+            </section>
         </div>
+    )
+}
+
+function CatalogMetric({
+    icon: Icon,
+    label,
+    value,
+}: {
+    icon: ComponentType<{ className?: string }>
+    label: string
+    value: number
+}) {
+    return (
+        <Card className="rounded-lg border-zinc-200 bg-white shadow-sm">
+            <CardContent className="flex items-center gap-3 p-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <Icon className="h-5 w-5" />
+                </div>
+                <div>
+                    <p className="text-2xl font-semibold text-zinc-950">{value}</p>
+                    <p className="text-sm text-zinc-500">{label}</p>
+                </div>
+            </CardContent>
+        </Card>
     )
 }

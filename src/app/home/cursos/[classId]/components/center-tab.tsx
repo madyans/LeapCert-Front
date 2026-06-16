@@ -12,7 +12,7 @@ export const CenterTab = ({ calculateProgress, description, sections }: iProps) 
     const hasSections = sections.length > 0
 
     return (
-        <section className="rounded-md border border-zinc-200 bg-white p-6 shadow-sm">
+        <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
             <div className="space-y-6 text-zinc-950">
                 <div className="rounded-md border border-green-100 bg-green-50/70 p-4">
                     <div className="text-xs font-semibold uppercase tracking-wide text-green-700">Descrição do curso</div>
