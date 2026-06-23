@@ -10,38 +10,32 @@ export const Frog = ({ frogRef, leftEyeRef, rightEyeRef }: iProps) => {
     return (
         <div
             ref={frogRef}
-            className="absolute -top-32 left-1/2 transform -translate-x-1/2 w-40 h-40 flex items-center justify-center"
+            className="mx-auto mb-5 flex h-28 w-28 items-center justify-center"
         >
             <div className="relative">
-                {/* Frog body */}
-                <div className="w-32 h-24 bg-green-500 rounded-full shadow-lg relative z-10 transition-all duration-300 hover:bg-green-400">
-                    {/* Add subtle texture to the frog */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-b from-green-400/30 to-transparent"></div>
+                <div className="relative z-10 h-20 w-28 rounded-[44%] bg-green-500 shadow-lg shadow-green-900/15 transition-all duration-300 hover:bg-green-400">
+                    <div className="absolute inset-0 rounded-[44%] bg-gradient-to-b from-green-300/40 to-transparent" />
                 </div>
 
-                {/* Frog eyes */}
                 <div
                     ref={leftEyeRef}
-                    className="absolute top-2 left-4 w-10 h-10 bg-white rounded-full z-20 flex items-center justify-center overflow-hidden"
+                    className="absolute left-3 top-1 z-20 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white"
                 >
-                    <div className="w-6 h-6 bg-black rounded-full transition-transform duration-75"></div>
+                    <div className="h-5 w-5 rounded-full bg-black transition-transform duration-75" />
                 </div>
                 <div
                     ref={rightEyeRef}
-                    className="absolute top-2 right-4 w-10 h-10 bg-white rounded-full z-20 flex items-center justify-center overflow-hidden"
+                    className="absolute right-3 top-1 z-20 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white"
                 >
-                    <div className="w-6 h-6 bg-black rounded-full transition-transform duration-75"></div>
+                    <div className="h-5 w-5 rounded-full bg-black transition-transform duration-75" />
                 </div>
 
-                {/* Frog mouth */}
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-green-700 rounded-full z-20">
-                    {/* Add smile line */}
-                    <div className="absolute top-1.5 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-green-800/50 rounded-t-full"></div>
+                <div className="absolute bottom-3 left-1/2 z-20 h-5 w-14 -translate-x-1/2 rounded-full bg-green-700">
+                    <div className="absolute left-1/2 top-1.5 h-1 w-9 -translate-x-1/2 rounded-full bg-green-800/50" />
                 </div>
 
-                {/* Frog legs */}
-                <div className="absolute -bottom-4 left-2 w-10 h-14 bg-green-600 rounded-full z-0 transform rotate-45"></div>
-                <div className="absolute -bottom-4 right-2 w-10 h-14 bg-green-600 rounded-full z-0 transform -rotate-45"></div>
+                <div className="absolute -bottom-3 left-2 z-0 h-10 w-8 rotate-45 rounded-full bg-green-600" />
+                <div className="absolute -bottom-3 right-2 z-0 h-10 w-8 -rotate-45 rounded-full bg-green-600" />
             </div>
         </div>
     )
